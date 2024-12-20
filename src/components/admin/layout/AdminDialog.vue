@@ -3,7 +3,6 @@
   import { useDialogStore } from '@/stores/dialog'
 	import { storeToRefs } from 'pinia'
 	import { useRouter } from 'vue-router'
-  import { computed } from 'vue'
 
   const loadStore = useLoadStore()
 	const { isAdminLoading } = storeToRefs(loadStore)

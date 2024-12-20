@@ -1,7 +1,6 @@
 <script setup>
   import { useEditorStore } from '@/stores/editor'
 	import { storeToRefs } from 'pinia'
-  import { ref } from 'vue'
 
   const editorStore = useEditorStore()
 	const { editorContent } = storeToRefs(editorStore)

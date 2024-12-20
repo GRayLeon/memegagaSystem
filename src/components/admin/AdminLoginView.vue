@@ -1,5 +1,4 @@
 <script setup>
-  import { RouterLink } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
 	import { storeToRefs } from 'pinia'
   import { ref } from 'vue'
