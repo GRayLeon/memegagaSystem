@@ -6,7 +6,7 @@ import { useLoadStore } from '@/stores/load'
 import { storeToRefs } from 'pinia'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/'),
   routes: [
     {
       path: '/',
