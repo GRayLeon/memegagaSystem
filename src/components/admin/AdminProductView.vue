@@ -1,0 +1,24 @@
+<script setup>
+  import { useProductStore } from '@/stores/product'
+  import { storeToRefs } from 'pinia'
+  import { RouterView } from 'vue-router';
+  import { onMounted, onUpdated } from 'vue'
+
+  const productStore = useProductStore()
+  const { page, pageSize, category, status, sort, order, getProducts } = storeToRefs(productStore)
+
+  onMounted( () => {
+    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+  })
+
+  onUpdated( () => {
+    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+  })
+</script>
+
+<template>
+  <RouterView></RouterView>
+</template>
+
+<style scoped>
+</style>

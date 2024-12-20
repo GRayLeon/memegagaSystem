@@ -1,0 +1,85 @@
+import { useLoadStore } from '@/stores/load'
+import { defineStore, storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import axios from 'axios'
+
+import router from '@/router'
+
+export const useAuthStore = defineStore('auth', () => {
+  const loadStore = useLoadStore()
+	const { isAdminLoading } = storeToRefs(loadStore)
+
+  const isLogin = ref(false)
+
+  const setToken = (token, expiresIn) => {
+    document.cookie = `accessToken=${token}; max-age=${expiresIn}; path=/`
+  }
+
+  const clearToken = () => {
+    document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"
+  }
+
+  const getToken = ref(() => {
+    const cookies = document.cookie.split("; ")
+    const cookieMap = new Map()
+
+    cookies.forEach(cookie => {
+        const [name, value] = cookie.split("=")
+        cookieMap.set(name, value)
+    })
+
+    return cookieMap.get('accessToken')
+  })
+
+  const login = ref( async loginAccount => {
+    isAdminLoading.value = true
+    const apiURL = 'http://localhost:3000/auth/login'
+    try {
+      let response = await axios.post(apiURL, loginAccount)
+      if (response) {
+        setToken(response.data.token, response.data.expiresIn)
+        checkLogin.value()
+        isAdminLoading.value = false
+        router.push({ name: 'adminHome'})
+      }
+    } catch(e) {
+      console.log(e)
+    }
+  })
+
+  const logout = ref( () => {
+    clearToken()
+    checkLogin.value()
+  })
+
+  const checkLogin = ref( () => {
+    const accessToken = getToken.value()
+    if (accessToken) {
+      isLogin.value = true
+    } else {
+      isLogin.value = false
+    }
+  })
+
+  const profile = ref({})
+  const getProfile = ref( async () => {
+    isAdminLoading.value = true
+    const apiURL = 'http://localhost:3000/auth/profile'
+    const token = getToken.value()
+    try {
+      let response = await axios.get(apiURL, {
+        headers: { 
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (response) {
+        profile.value = { ...response.data }
+        isAdminLoading.value = false
+      }
+    } catch(e) {
+      console.log(e)
+    }
+  })
+
+  return { isLogin, login, logout, getToken, checkLogin, getProfile, profile }
+})
