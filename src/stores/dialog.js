@@ -44,5 +44,5 @@ export const useDialogStore = defineStore('dialog', () => {
     openDialog.value('failed', errorInfo[e.status].title, errorInfo[e.status].message + e.message, 'reload')
   })
 
-  return { dialogIsOpen, dialogStatus, dialogTitle, dialogInfo, dialogTarget, openDialog, errorHandle }
+  return { dialogIsOpen, dialogStatus, dialogTitle, dialogInfo, dialogTarget, dialogData, openDialog, errorHandle }
 })

@@ -1,5 +1,6 @@
 import { useLoadStore } from '@/stores/load'
 import { useAuthStore } from '@/stores/auth'
+import { useDialogStore } from '@/stores/dialog'
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
@@ -12,6 +13,9 @@ export const useAccountStore = defineStore('account', () => {
 
   const authStore = useAuthStore()
 	const { getToken } = storeToRefs(authStore)
+
+  const dialogStore = useDialogStore()
+	const { openDialog, errorHandle } = storeToRefs(dialogStore)
 
   const accounts = ref([])
 
@@ -33,6 +37,7 @@ export const useAccountStore = defineStore('account', () => {
         isAdminLoading.value = false
       }
     } catch(e) {
+      errorHandle.value(e)
       console.log(e)
     }
   })
@@ -48,10 +53,11 @@ export const useAccountStore = defineStore('account', () => {
         }
       })
       if (response) {
-        console.log('done')
+        openDialog.value('success', '新增成功', '帳號已經新增成功，按確定返回帳號管理列表。', 'adminAccountList')
         getAccounts.value()
       }
     } catch(e) {
+      errorHandle.value(e)
       console.log(e)
     }
   })
@@ -68,10 +74,11 @@ export const useAccountStore = defineStore('account', () => {
         }
       })
       if (response) {
-        console.log('done')
+        openDialog.value('success', '刪除成功', '帳號已經刪除成功，按確定返回帳號管理列表。', 'adminAccountList')
         getAccounts.value()
       }
     } catch(e) {
+      errorHandle.value(e)
       console.log(e)
     }
   })

@@ -39,7 +39,7 @@
         <td class="name">{{ account.account }}</td>
         <td class="type">{{ account.type }}</td>
         <td class="lastLogin">{{ showDate(account.lastLogin) }}</td>
-        <td><button @click="openDialog('delete', '確定刪除', '刪除後將無法復原，是否要將此帳號刪除？', 'AccountList', account._id)">刪除帳號</button></td>
+        <td><button @click="openDialog('delete', '確定刪除', '刪除後將無法復原，是否要將此帳號刪除？', 'adminAccountList', account._id)">刪除帳號</button></td>
       </tr>
     </tbody>
   </table>
