@@ -21,7 +21,7 @@ export const useSizeStore = defineStore('size', () => {
 
   const getSizeDatas = ref( async () => {
     isAdminLoading.value = true
-    const apiURL = 'http://localhost:3000/size'
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/size`
     try {
       let response = await axios.get(apiURL)
       if (response) {

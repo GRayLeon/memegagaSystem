@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = ref( async loginAccount => {
     isAdminLoading.value = true
-    const apiURL = 'http://localhost:3000/auth/login'
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/auth/login`
     try {
       let response = await axios.post(apiURL, loginAccount)
       if (response) {
@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
   const profile = ref({})
   const getProfile = ref( async () => {
     isAdminLoading.value = true
-    const apiURL = 'http://localhost:3000/auth/profile'
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/auth/profile`
     const token = getToken.value()
     try {
       let response = await axios.get(apiURL, {

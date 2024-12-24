@@ -21,7 +21,7 @@ export const useCategoryStore = defineStore('category', () => {
 
   const getCategorys = ref( async () => {
     isAdminLoading.value = true
-    const apiURL = 'http://localhost:3000/category'
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/category`
     try {
       let response = await axios.get(apiURL)
       if (response) {
