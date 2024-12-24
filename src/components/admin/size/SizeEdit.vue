@@ -46,7 +46,6 @@
   }
 
   onMounted(() => {
-    isAdminLoading.value = false
     initSize()
   })
 </script>
@@ -84,7 +83,7 @@
     <div class="buttonArea">
       <button
         :disabled="!isReady"
-        @click="editSize(size, isEdit ? 'edit' : 'add', 'AdminSizeList')">
+        @click="editSize(size, isEdit ? 'edit' : 'add', 'adminSizeList')">
         {{ isEdit ? '儲存編輯' : '新增規格' }}
       </button>
     </div>

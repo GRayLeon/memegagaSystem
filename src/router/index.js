@@ -128,9 +128,9 @@ router.beforeEach( async (to, from, next) => {
   const loadStore = useLoadStore()
 	const { isAdminLoading } = storeToRefs(loadStore)
 
-  checkLogin.value()
   if (to.name && to.name.startsWith('admin')) {
     isAdminLoading.value = true
+    await checkLogin.value()
     if (isLogin.value) {
       await getProfile.value()
       next()

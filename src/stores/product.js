@@ -67,19 +67,19 @@ export const useProductStore = defineStore('product', () => {
   })
 
   const sucessInfo = {
-    add: {
+    'add': {
       title: '上架成功',
       message: '商品已經上架成功，按確定返回產品管理列表。'
     },
-    save: {
+    'save': {
       title: '儲存成功',
       message: '商品草稿已經儲存成功，按確定返回產品管理列表。'
     },
-    edit: {
+    'edit': {
       title: '編輯成功',
-      message: ''
+      message: '商品已經編輯成功，按確定返回產品管理列表。'
     },
-    archive: {
+    'archive': {
       title: '商品已封存',
       message: '商品已經封存完成，無法再進行任何編輯，按確定返回產品管理列表。'
     }
@@ -119,10 +119,11 @@ export const useProductStore = defineStore('product', () => {
         }
       })
       if (response) {
-        openDialog.value('success', sucessInfo.editType.title, sucessInfoeditType.message, 'adminProductList')
+        console.log(sucessInfo[editType].message)
+        openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'adminProductList')
       }
     } catch(e) {
-      errorHandle.value(e)
+      // errorHandle.value(e)
       console.log(e)
     }
   })
