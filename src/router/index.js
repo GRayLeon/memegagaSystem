@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AdminView from '../views/AdminView.vue'
+import NotFound from '../views/NotFound.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useLoadStore } from '@/stores/load'
 import { storeToRefs } from 'pinia'
@@ -117,6 +118,15 @@ const router = createRouter({
       path: '/admin/login',
       name:  'adminLogin',
       component: () => import('../components/admin/AdminLoginView.vue')
+    },
+    {
+      path: '/admin/:pathMatch(.*)*',
+      redirect: '/admin'
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: NotFound
     }
   ]
 })

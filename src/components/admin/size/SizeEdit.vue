@@ -1,15 +1,11 @@
 <script setup>
   import { useSizeStore } from '@/stores/size'
-  import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
 	import { useRoute, useRouter } from 'vue-router'
   import { ref, computed, onMounted } from 'vue'
 
   const sizeStore = useSizeStore()
 	const { sizeDatas, editSize } = storeToRefs(sizeStore)
-
-  const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
 
   const route = useRoute()
   const router = useRouter()

@@ -1,7 +1,11 @@
 <script setup>
+  import { useLoadStore } from '@/stores/load'
   import { useAuthStore } from '@/stores/auth'
 	import { storeToRefs } from 'pinia'
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
+
+  const loadStore = useLoadStore()
+	const { isAdminLoading } = storeToRefs(loadStore)
 
   const authStore = useAuthStore()
 	const { isLogin, login } = storeToRefs(authStore)
@@ -10,6 +14,11 @@
     account: null,
     password: null
   })
+
+  onMounted( () => {
+    isAdminLoading.value = false
+  })
+
 </script>
 
 <template>
@@ -28,6 +37,9 @@
         <button @click="login(loginAccount)">登入</button>
       </div>
     </div>
+  </div>
+  <div class="adminLoading" v-if="isAdminLoading">
+    <span>LOADING</span>
   </div>
 </template>
 
