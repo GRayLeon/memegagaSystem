@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^4.0.7",
     "axios": "^1.7.9",
     "i18n": "^0.15.1",
     "pinia": "^2.2.6",
+    "tinymce": "^5.10.9",
+    "tinymce-i18n": "^24.12.9",
     "vue": "^3.5.13",
     "vue-i18n": "^10.0.5",
     "vue-router": "^4.4.5"

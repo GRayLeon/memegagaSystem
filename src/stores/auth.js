@@ -1,4 +1,5 @@
 import { useLoadStore } from '@/stores/load'
+import { useDialogStore } from '@/stores/dialog'
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
@@ -8,6 +9,9 @@ import router from '@/router'
 export const useAuthStore = defineStore('auth', () => {
   const loadStore = useLoadStore()
 	const { isAdminLoading } = storeToRefs(loadStore)
+
+  const dialogStore = useDialogStore()
+	const { errorHandle } = storeToRefs(dialogStore)
 
   const isLogin = ref(false)
 
@@ -43,6 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
         router.push({ name: 'adminHome'})
       }
     } catch(e) {
+      errorHandle.value(e)
       console.log(e)
     }
   })

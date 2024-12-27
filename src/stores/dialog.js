@@ -26,6 +26,10 @@ export const useDialogStore = defineStore('dialog', () => {
       title: '請求錯誤',
       message: '請求資料有誤，請洽開發人員協助。',
     },
+    401: {
+      title: '驗證錯誤',
+      message: '請確定登入的資訊是否有誤，請按確定重新整理。',
+    },
     403: {
       title: '驗證失敗',
       message: '登入時效已過期或權限已遭修改，請按確定重新整理。',

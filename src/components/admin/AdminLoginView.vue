@@ -4,6 +4,8 @@
 	import { storeToRefs } from 'pinia'
   import { ref, onMounted } from 'vue'
 
+  import AdminDialog from '@/components/admin/layout/AdminDialog.vue'
+
   const loadStore = useLoadStore()
 	const { isAdminLoading } = storeToRefs(loadStore)
 
@@ -41,6 +43,7 @@
   <div class="adminLoading" v-if="isAdminLoading">
     <span>LOADING</span>
   </div>
+  <AdminDialog></AdminDialog>
 </template>
 
 <style scoped>
