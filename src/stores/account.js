@@ -62,7 +62,6 @@ export const useAccountStore = defineStore('account', () => {
     }
   })
 
-
   const deleteAccount = ref( async account_id => {
     isAdminLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/auth/${account_id}`

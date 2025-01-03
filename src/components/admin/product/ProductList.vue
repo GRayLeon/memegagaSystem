@@ -39,8 +39,8 @@
     getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
   })
 
-  onMounted( async () => {
-    await getCategorys.value()
+  onMounted( () => {
+    getCategorys.value()
   })
 </script>
 

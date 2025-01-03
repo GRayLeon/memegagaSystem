@@ -130,7 +130,6 @@
   })
 
   onMounted( async () => {
-    isAdminLoading.value = false
     await getCategorys.value()
     await getSizeDatas.value()
     initProductInfo()
@@ -145,7 +144,6 @@
   })
 
   onUpdated( () => {
-    isAdminLoading.value = false
   })
 
 </script>

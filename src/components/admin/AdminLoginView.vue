@@ -5,6 +5,7 @@
   import { ref, onMounted } from 'vue'
 
   import AdminDialog from '@/components/admin/layout/AdminDialog.vue'
+  import AdminLoading from '@/components/admin/layout/AdminLoading.vue'
 
   const loadStore = useLoadStore()
 	const { isAdminLoading } = storeToRefs(loadStore)
@@ -40,9 +41,7 @@
       </div>
     </div>
   </div>
-  <div class="adminLoading" v-if="isAdminLoading">
-    <span>LOADING</span>
-  </div>
+  <AdminLoading></AdminLoading>
   <AdminDialog></AdminDialog>
 </template>
 

@@ -8,6 +8,7 @@
   import AdminNav from '../components/admin/layout/AdminNav.vue'
   import AdminAccountBox from '../components/admin/layout/AdminAccountBox.vue'
   import AdminDialog from '../components/admin/layout/AdminDialog.vue'
+  import AdminLoading from '../components/admin/layout/AdminLoading.vue'
 
   const authStore = useAuthStore()
 	const { isLogin } = storeToRefs(authStore)
@@ -36,9 +37,7 @@
       <RouterView></RouterView>
     </div>
   </div>
-  <div class="adminLoading" v-if="isAdminLoading">
-    <span>LOADING</span>
-  </div>
+  <AdminLoading></AdminLoading>
   <AdminDialog></AdminDialog>
 </template>
 

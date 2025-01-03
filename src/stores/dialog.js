@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import router from '@/router'
-
 export const useDialogStore = defineStore('dialog', () => {
 
   const dialogIsOpen = ref(false)
@@ -41,7 +39,7 @@ export const useDialogStore = defineStore('dialog', () => {
     500: {
       title: '未預期錯誤',
       message: '發生未預期錯誤，請洽開發人員協助。',
-    },
+    }
   }
 
   const errorHandle = ref( e => {

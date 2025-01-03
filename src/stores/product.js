@@ -119,11 +119,10 @@ export const useProductStore = defineStore('product', () => {
         }
       })
       if (response) {
-        console.log(sucessInfo[editType].message)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'adminProductList')
       }
     } catch(e) {
-      // errorHandle.value(e)
+      errorHandle.value(e)
       console.log(e)
     }
   })
