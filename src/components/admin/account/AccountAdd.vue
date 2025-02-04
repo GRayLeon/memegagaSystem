@@ -42,7 +42,9 @@
 <template>
   <div class="title">
     <div class="buttonTitle">
-      <div class="backButton" @click="backAccountList()">＜</div>
+      <div class="backButton" @click="backAccountList()">
+        <span class="material-icons">chevron_left</span>
+      </div>
       <h1>新增帳號</h1>
     </div>
   </div>

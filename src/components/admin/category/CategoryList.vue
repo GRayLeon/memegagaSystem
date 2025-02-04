@@ -28,7 +28,7 @@
 
 <template>
   <div class="title">
-    <h1>商品分類管理</h1>
+    <h1><span class="material-icons">category</span>分類管理</h1>
     <button @click="goToAddCategory">新增分類</button>
   </div>
   <table class="dataTable">

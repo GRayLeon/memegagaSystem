@@ -21,7 +21,7 @@
 
 <template>
   <div class="title">
-    <h1>帳號管理</h1>
+    <h1><span class="material-icons">group</span> 帳號管理</h1>
     <button @click="goToAddAccount()">新增帳號</button>
   </div>
   <table class="dataTable">

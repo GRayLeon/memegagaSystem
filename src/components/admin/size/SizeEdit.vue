@@ -1,11 +1,15 @@
 <script setup>
   import { useSizeStore } from '@/stores/size'
+  import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
 	import { useRoute, useRouter } from 'vue-router'
   import { ref, computed, onMounted } from 'vue'
 
   const sizeStore = useSizeStore()
 	const { sizeDatas, editSize } = storeToRefs(sizeStore)
+
+  const loadStore = useLoadStore()
+	const { isAdminLoading } = storeToRefs(loadStore)
 
   const route = useRoute()
   const router = useRouter()
@@ -37,11 +41,13 @@
         if (sizeData._id == route.params.id) {
           size.value = { ...sizeData }
         }
+        isAdminLoading.value = false
       })
     }
   }
 
   onMounted(() => {
+    isAdminLoading.value = true
     initSize()
   })
 </script>
@@ -49,8 +55,10 @@
 <template>
   <div class="title">
     <div class="buttonTitle">
-      <div class="backButton" @click="backSizeList()">＜</div>
-      <h1>{{ isEdit ? '編輯' : '新增' }}商品規格</h1>
+      <div class="backButton" @click="backSizeList()">
+        <span class="material-icons">chevron_left</span>
+      </div>
+      <h1>{{ isEdit ? '編輯' : '新增' }}規格</h1>
     </div>
   </div>
   <div class="editArea">

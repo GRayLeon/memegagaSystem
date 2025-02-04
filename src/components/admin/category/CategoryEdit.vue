@@ -40,12 +40,13 @@
         if (categoryData._id == route.params.id) {
           category.value = { ...categoryData }
         }
+        isAdminLoading.value = false
       })
     }
   }
 
   onMounted(() => {
-    isAdminLoading.value = false
+    isAdminLoading.value = true
     initCategory()
   })
 </script>
@@ -53,8 +54,10 @@
 <template>
   <div class="title">
     <div class="buttonTitle">
-      <div class="backButton" @click="backCategoryList()">＜</div>
-      <h1>{{ isEdit ? '編輯' : '新增' }}商品分類</h1>
+      <div class="backButton" @click="backCategoryList()">
+        <span class="material-icons">chevron_left</span>
+      </div>
+      <h1>{{ isEdit ? '編輯' : '新增' }}分類</h1>
     </div>
   </div>
   <div class="editArea">

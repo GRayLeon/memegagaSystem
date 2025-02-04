@@ -28,7 +28,7 @@
 
 <template>
   <div class="title">
-    <h1>商品規格管理</h1>
+    <h1><span class="material-icons">crop_free</span>規格管理</h1>
     <button @click="goToAddSize">新增規格</button>
   </div>
   <table class="dataTable">

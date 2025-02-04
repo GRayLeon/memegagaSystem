@@ -1,5 +1,5 @@
 <script setup>
-  import { RouterLink } from 'vue-router'
+  import { useRouter } from 'vue-router'
   import { useProductStore } from '@/stores/product'
   import { useCategoryStore } from '@/stores/category'
 	import { storeToRefs } from 'pinia'
@@ -10,6 +10,8 @@
 
   const categoryStore = useCategoryStore()
 	const { categorys, getCategorys } = storeToRefs(categoryStore)
+
+  const router = useRouter()
 
   const categoryWording = categoryId => {
     return categorys.value.find( category => category._id == categoryId ).name['zh']
@@ -46,7 +48,7 @@
 
 <template>
   <div class="title">
-    <h1>產品管理</h1>
+    <h1><span class="material-icons">list_alt</span>產品管理</h1>
     <button @click="goToAddProduct">新增產品</button>
   </div>
   <div class="filterArea">
@@ -83,31 +85,25 @@
     </div>
   </div>
   <ul v-if="products.data.length" class="cardList">
-    <li>
-      <div class="cardList__card cardList__card--head">
-        <div class="img">圖片</div>
-        <div class="name">名稱</div>
-        <div class="status">狀態</div>
-        <div class="category">分類</div>
-        <div class="description">描述</div>
-        <div class="price">價錢</div>
-      </div>
+    <li class="head">
+      <div class="img">圖片</div>
+      <div class="name">名稱</div>
+      <div class="status">狀態</div>
+      <div class="category">分類</div>
+      <div class="description">描述</div>
+      <div class="price">價錢</div>
     </li>
-    <li v-for="product in products.data">
-      <RouterLink :to="`product/${product._id}`">
-        <div class="cardList__card">
-          <img :src="product.imageURL">
-          <div class="name">{{ product.name['zh'] }}</div>
-          <div class="status">
-            <span :class="product.status">{{ statusWording(product.status) }}</span>
-          </div>
-          <div class="category">
-            {{ categoryWording(product.parentCategory) }}
-          </div>
-          <div class="description">{{  product.description['zh'] }}</div>
-          <div class="price">{{  product.basePrice }}<span>NTD</span></div>
-        </div>
-      </RouterLink>
+    <li v-for="product in products.data" @click="router.push(`product/${product._id}`)">
+      <div class="img"><img :src="product.imageURL"></div>
+      <div class="name">{{ product.name['zh'] }}</div>
+      <div class="status">
+        <span :class="product.status">{{ statusWording(product.status) }}</span>
+      </div>
+      <div class="category">
+        {{ categoryWording(product.parentCategory) }}
+      </div>
+      <div class="description">{{  product.description['zh'] }}</div>
+      <div class="price">{{  product.basePrice }}<span>NTD</span></div>
     </li>
   </ul>
   <div v-else class="empty">

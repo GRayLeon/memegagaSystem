@@ -130,6 +130,7 @@
   })
 
   onMounted( async () => {
+    isAdminLoading.value = true
     await getCategorys.value()
     await getSizeDatas.value()
     initProductInfo()
@@ -143,15 +144,14 @@
     }
   })
 
-  onUpdated( () => {
-  })
-
 </script>
 
 <template>
   <div class="title">
     <div class="buttonTitle">
-      <div class="backButton" @click="backcardList()">＜</div>
+      <div class="backButton" @click="backcardList()">
+        <span class="material-icons">chevron_left</span>
+      </div>
       <h1>{{ typeWording }}產品</h1>
     </div>
   </div>
@@ -169,7 +169,7 @@
       更改圖片
     </button>
     <div v-else-if="!isArchived" class="imageSelect">
-      <input type="file" name="selectImage" id="selectImage" @change="onFileChange">
+      <input type="file" accept=".jpg, .png" name="selectImage" id="selectImage" @change="onFileChange">
       <span>{{ previewName }}</span>
       <label for="selectImage">選擇檔案</label>
     </div>

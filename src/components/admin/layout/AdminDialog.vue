@@ -50,7 +50,7 @@
   <div class="adminDialog" v-if="dialogIsOpen">
     <div class="adminDialog__box">
       <div class="adminDialog__icon" :class="dialogStatus">
-        {{ dialogStatus == 'success' ? '✔' : '✘' }}
+        <span class="material-icons">{{ dialogStatus == 'success' ? 'check' : 'close' }}</span>
       </div>
       <div class="adminDialog__title">{{ dialogTitle }}</div>
       <div class="adminDialog__info">{{ dialogInfo }}</div>
