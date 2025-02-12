@@ -9,7 +9,7 @@ import router from '@/router'
 
 export const useCategoryStore = defineStore('category', () => {
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const authStore = useAuthStore()
 	const { getToken } = storeToRefs(authStore)
@@ -20,13 +20,13 @@ export const useCategoryStore = defineStore('category', () => {
   const categorys = ref([])
 
   const getCategorys = ref( async () => {
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/category`
     try {
       let response = await axios.get(apiURL)
       if (response) {
         categorys.value = [...response.data]
-        isAdminLoading.value = false
+        isLoading.value = false
       }
     } catch(e) {
       errorHandle.value(e)
@@ -35,7 +35,7 @@ export const useCategoryStore = defineStore('category', () => {
   })
 
   const editCategory = ref( async (category, type, target) => {
-    isAdminLoading.value = true
+    isLoading.value = true
     
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/category/${type}`
     const token = getToken.value()
@@ -60,7 +60,7 @@ export const useCategoryStore = defineStore('category', () => {
   })
 
   const goToAddCategory = ref( () => {
-    router.push({ name: 'adminCategoryAdd'})
+    router.push({ name: 'categoryAdd'})
   })
 
   return { categorys, getCategorys, editCategory, goToAddCategory }

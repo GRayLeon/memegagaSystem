@@ -9,7 +9,7 @@ import router from '@/router'
 
 export const useProductStore = defineStore('product', () => {
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const authStore = useAuthStore()
 	const { getToken } = storeToRefs(authStore)
@@ -51,14 +51,14 @@ export const useProductStore = defineStore('product', () => {
     sort = sort? `&sortBy=${sort}` : ''
     order = order? `&sortOrder=${order}` : ''
 
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/product?${page}${pageSize}${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
         products.value = {...response.data}
         isGetProducts.value = true
-        isAdminLoading.value = false
+        isLoading.value = false
       }
     } catch(e) {
       errorHandle.value(e)
@@ -86,7 +86,7 @@ export const useProductStore = defineStore('product', () => {
   }
 
   const editProduct = ref( async (productInfo, selectedSizes, editType, selectedFile) => {
-    isAdminLoading.value = true
+    isLoading.value = true
     let type = null
     type = editType == 'create' ? 'add'
     : editType == 'save' ? 'edit'
@@ -119,7 +119,7 @@ export const useProductStore = defineStore('product', () => {
         }
       })
       if (response) {
-        openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'adminProductList')
+        openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'productList')
       }
     } catch(e) {
       errorHandle.value(e)
@@ -128,7 +128,7 @@ export const useProductStore = defineStore('product', () => {
   })
 
   const deleteProduct = ref( async id => {
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/product/${id}`
     const token = getToken.value()
     try {
@@ -148,7 +148,7 @@ export const useProductStore = defineStore('product', () => {
   })
 
   const goToAddProduct = ref( () => {
-    router.push({ name: 'adminProductAdd'})
+    router.push({ name: 'productAdd'})
   })
 
   return { statusList, page, pageSize, category, status, sort, order, products, getProducts, isGetProducts, editProduct, deleteProduct, goToAddProduct }

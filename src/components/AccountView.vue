@@ -9,14 +9,14 @@
 	const { getAccounts } = storeToRefs(accountStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   onMounted( () => {
     getAccounts.value()
   })
 
   onUpdated( () => {
-    isAdminLoading.value = false
+    isLoading.value = false
   })
 </script>
 

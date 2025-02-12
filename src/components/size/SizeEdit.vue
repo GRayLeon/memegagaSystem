@@ -9,13 +9,13 @@
 	const { sizeDatas, editSize } = storeToRefs(sizeStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const route = useRoute()
   const router = useRouter()
 
   const backSizeList = () => {
-    router.push({ name: 'adminSizeList'})
+    router.push({ name: 'sizeList'})
   }
 
   const isEdit = computed( () => {
@@ -41,13 +41,13 @@
         if (sizeData._id == route.params.id) {
           size.value = { ...sizeData }
         }
-        isAdminLoading.value = false
+        isLoading.value = false
       })
     }
   }
 
   onMounted(() => {
-    isAdminLoading.value = true
+    isLoading.value = true
     initSize()
   })
 </script>
@@ -87,7 +87,7 @@
     <div class="buttonArea">
       <button
         :disabled="!isReady"
-        @click="editSize(size, isEdit ? 'edit' : 'add', 'adminSizeList')">
+        @click="editSize(size, isEdit ? 'edit' : 'add', 'sizeList')">
         {{ isEdit ? '儲存編輯' : '新增規格' }}
       </button>
     </div>

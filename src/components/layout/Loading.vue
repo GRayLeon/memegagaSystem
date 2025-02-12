@@ -3,13 +3,13 @@
 	import { storeToRefs } from 'pinia'
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
 
 </script>
 
 <template>
-  <div class="adminLoading" v-if="isAdminLoading">
+  <div class="adminLoading" v-if="isLoading">
     <span>L</span>
     <span>O</span>
     <span>A</span>

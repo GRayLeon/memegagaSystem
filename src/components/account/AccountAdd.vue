@@ -9,17 +9,18 @@
 	const { addAccount } = storeToRefs(accountStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const router = useRouter()
 
   const backAccountList = ( () => {
-    router.push({ name: 'adminAccountList'})
+    router.push({ name: 'accountList'})
   })
 
   const account = ref({
     account: '',
-    type: '',
+    type: 'administrator',
+    description: '',
     password: ''
   })
 
@@ -28,14 +29,15 @@
   const isReady = computed( () => {
     let ready = true
     if (!account.value.account) { ready = false }
-    if (!account.value.type) { ready = false }
+    // if (!account.value.type) { ready = false }
+    if (!account.value.description) { ready = false }
     if (!account.value.password) { ready = false }
     if (repeatPassword.value !== account.value.password) { ready = false }
     return ready
   })
 
   onMounted(() => {
-    isAdminLoading.value = false
+    isLoading.value = false
   })
 </script>
 
@@ -57,6 +59,12 @@
         type="text"/>
     </div>
     <div class="inputItem">
+      <div class="head">備註</div>
+      <input
+        v-model="account.description"
+        placeholder="請輸入備註"/>
+    </div>
+    <!-- <div class="inputItem">
       <div class="head">權限</div>
       <select v-model="account.type">
           <option value="">請選擇權限</option>
@@ -64,7 +72,7 @@
           <option value="editor">editor</option>
           <option value="sales">sales</option>
       </select>
-    </div>
+    </div> -->
     <div class="inputItem">
       <div class="head">密碼</div>
       <input 
@@ -82,7 +90,7 @@
     <div class="buttonArea">
       <button 
         :disabled="!isReady"
-        @click="addAccount(account)">新增帳號</button>
+        @click="addAccount(account, 'accountList')">新增帳號</button>
     </div>
   </div>
 </template>

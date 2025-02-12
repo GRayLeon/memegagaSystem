@@ -9,13 +9,13 @@
 	const { categorys, editCategory } = storeToRefs(categoryStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const route = useRoute()
   const router = useRouter()
 
   const backCategoryList = () => {
-    router.push({ name: 'adminCategoryList'})
+    router.push({ name: 'categoryList'})
   }
 
   const isEdit = computed( () => {
@@ -40,13 +40,13 @@
         if (categoryData._id == route.params.id) {
           category.value = { ...categoryData }
         }
-        isAdminLoading.value = false
+        isLoading.value = false
       })
     }
   }
 
   onMounted(() => {
-    isAdminLoading.value = true
+    isLoading.value = true
     initCategory()
   })
 </script>
@@ -98,7 +98,7 @@
       </select>
     </div>
     <div class="buttonArea">
-      <button @click="editCategory(category, isEdit ? 'edit' : 'add', 'adminCategoryList')">
+      <button @click="editCategory(category, isEdit ? 'edit' : 'add', 'categoryList')">
         {{ isEdit ? '儲存編輯' : '新增分類' }}
       </button>
     </div>

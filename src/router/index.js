@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import AdminView from '../views/AdminView.vue'
 import NotFound from '../views/NotFound.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useLoadStore } from '@/stores/load'
@@ -11,117 +10,117 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name:  '',
       component: HomeView,
-    },
-    {
-      path: '/admin',
-      name:  'admin',
-      component: AdminView,
       children: [
         {
           path: '',
-          name: 'adminHome',
-          component: () => import('../components/admin/AdminHomeView.vue'),
+          name: 'home',
+          component: () => import('../components/HomeView.vue'),
         },
         {
           path: 'editor',
-          name: 'adminEditor',
-          component: () => import('../components/admin/AdminEditorView.vue'),
+          name: 'editor',
+          component: () => import('../components/EditorView.vue'),
         },
         {
           path: 'product',
-          name: 'adminProduct',
-          component: () => import('../components/admin/AdminProductView.vue'),
+          name: 'product',
+          component: () => import('../components/ProductView.vue'),
           children: [
             {
               path: '',
-              name: 'adminProductList',
-              component: () => import('../components/admin/product/ProductList.vue')
+              name: 'productList',
+              component: () => import('../components/product/ProductList.vue')
             },
             {
               path: 'add',
-              name: 'adminProductAdd',
-              component: () => import('../components/admin/product/ProductEdit.vue')
+              name: 'productAdd',
+              component: () => import('../components/product/ProductEdit.vue')
             },
             {
               path: ':id',
-              name: 'adminProductEdit',
-              component: () => import('../components/admin/product/ProductEdit.vue')
+              name: 'productEdit',
+              component: () => import('../components/product/ProductEdit.vue')
             }
           ]
         },
         {
           path: 'size',
-          name: 'adminSize',
-          component: () => import('../components/admin/AdminSizeView.vue'),
+          name: 'size',
+          component: () => import('../components/SizeView.vue'),
           children: [
             {
               path: '',
-              name: 'adminSizeList',
-              component: () => import('../components/admin/size/SizeList.vue')
+              name: 'sizeList',
+              component: () => import('../components/size/SizeList.vue')
             },
             {
               path: 'add',
-              name: 'adminSizeAdd',
-              component: () => import('../components/admin/size/SizeEdit.vue')
+              name: 'sizeAdd',
+              component: () => import('../components/size/SizeEdit.vue')
             },
             {
               path: ':id',
-              name: 'adminSizeEdit',
-              component: () => import('../components/admin/size/SizeEdit.vue')
+              name: 'sizeEdit',
+              component: () => import('../components/size/SizeEdit.vue')
             }
           ]
         },
         {
           path: 'category',
-          name: 'adminCategory',
-          component: () => import('../components/admin/AdminCategoryView.vue'),
+          name: 'category',
+          component: () => import('../components/CategoryView.vue'),
           children: [
             {
               path: '',
-              name: 'adminCategoryList',
-              component: () => import('../components/admin/category/CategoryList.vue')
+              name: 'categoryList',
+              component: () => import('../components/category/CategoryList.vue')
             },
             {
               path: 'add',
-              name: 'adminCategoryAdd',
-              component: () => import('../components/admin/category/CategoryEdit.vue')
+              name: 'categoryAdd',
+              component: () => import('../components/category/CategoryEdit.vue')
             },
             {
               path: ':id',
-              name: 'adminCategoryEdit',
-              component: () => import('../components/admin/category/CategoryEdit.vue')
+              name: 'categoryEdit',
+              component: () => import('../components/category/CategoryEdit.vue')
             }
           ]
         },
         {
           path: 'account',
-          name: 'adminAccount',
-          component: () => import('../components/admin/AdminAccountView.vue'),
+          name: 'account',
+          component: () => import('../components/AccountView.vue'),
           children: [
             {
               path: '',
-              name: 'adminAccountList',
-              component: () => import('../components/admin/account/AccountList.vue')
+              name: 'accountList',
+              component: () => import('../components/account/AccountList.vue')
             },
             {
               path: 'add',
-              name: 'adminAccountAdd',
-              component: () => import('../components/admin/account/AccountAdd.vue')
+              name: 'accountAdd',
+              component: () => import('../components/account/AccountAdd.vue')
+            },
+            {
+              path: ':type/:id',
+              name: 'accountEdit',
+              component: () => import('../components/account/AccountEdit.vue')
             }
           ]
         }
       ]
     },
     {
-      path: '/admin/login',
-      name:  'adminLogin',
-      component: () => import('../components/admin/AdminLoginView.vue')
+      path: '/login',
+      name:  'login',
+      component: () => import('../components/LoginView.vue')
     },
     {
-      path: '/admin/:pathMatch(.*)*',
-      redirect: '/admin'
+      path: '/:pathMatch(.*)*',
+      redirect: '/'
     },
     {
       path: '/:pathMatch(.*)*',
@@ -136,24 +135,20 @@ router.beforeEach( async (to, from, next) => {
 	const { isLogin, checkLogin, getProfile } = storeToRefs(authStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
-  if (to.name && to.name.startsWith('admin')) {
-    isAdminLoading.value = true
+    isLoading.value = true
     await checkLogin.value()
     if (isLogin.value) {
       await getProfile.value()
       next()
     } else {
-      if (to.name === 'adminLogin') {
+      if (to.name === 'login') {
         next()
       } else {
-        next('/admin/login')
+        next('/login')
       }
     }
-  } else {
-    next()
-  }
 })
 
 export default router

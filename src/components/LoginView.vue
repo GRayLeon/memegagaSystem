@@ -4,11 +4,11 @@
 	import { storeToRefs } from 'pinia'
   import { ref, onMounted } from 'vue'
 
-  import AdminDialog from '@/components/admin/layout/AdminDialog.vue'
-  import AdminLoading from '@/components/admin/layout/AdminLoading.vue'
+  import Dialog from '@/components/layout/Dialog.vue'
+  import Loading from '@/components/layout/Loading.vue'
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const authStore = useAuthStore()
 	const { isLogin, login } = storeToRefs(authStore)
@@ -19,7 +19,7 @@
   })
 
   onMounted( () => {
-    isAdminLoading.value = false
+    isLoading.value = false
   })
 
 </script>
@@ -41,8 +41,8 @@
       </div>
     </div>
   </div>
-  <AdminLoading></AdminLoading>
-  <AdminDialog></AdminDialog>
+  <Loading></Loading>
+  <Dialog></Dialog>
 </template>
 
 <style scoped>

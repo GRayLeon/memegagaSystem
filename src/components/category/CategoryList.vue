@@ -22,7 +22,7 @@
   }
 
   const goToEditCategory = id => {
-    router.push({ path: `/admin/category/${id}`})
+    router.push({ path: `/category/${id}`})
   }
 </script>
 

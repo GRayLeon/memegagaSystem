@@ -17,7 +17,7 @@
 	const { sizeDatas, getSizeDatas } = storeToRefs(sizeStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const route = useRoute()
   const router = useRouter()
@@ -126,11 +126,11 @@
   })
 
   const backcardList = ( () => {
-    router.push({ name: 'adminProductList'})
+    router.push({ name: 'productList'})
   })
 
   onMounted( async () => {
-    isAdminLoading.value = true
+    isLoading.value = true
     await getCategorys.value()
     await getSizeDatas.value()
     initProductInfo()

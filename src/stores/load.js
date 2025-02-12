@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useLoadStore = defineStore('load', () => {
 
-  const isAdminLoading = ref(false)
+  const isLoading = ref(false)
 
-  return { isAdminLoading }
+  return { isLoading }
 })

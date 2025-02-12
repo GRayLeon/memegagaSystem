@@ -624,6 +624,26 @@ body {
   flex: 1;
 }
 
+.infoArea {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+.infoArea .info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.infoArea .info .head {
+  font-size: 12px;
+  line-height: 20px;
+  color: #aaa;
+}
+.infoArea .info span {
+  line-height: 36px;
+}
+
 .editArea {
   display: flex;
   flex-direction: column;
@@ -779,6 +799,9 @@ body {
   flex-direction: row;
   justify-content: flex-end;
   gap: 8px;
+}
+.buttonArea--flex-start {
+  justify-content: flex-start;
 }
 .buttonArea button {
   width: 125px;

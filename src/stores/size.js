@@ -9,7 +9,7 @@ import router from '@/router'
 
 export const useSizeStore = defineStore('size', () => {
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const authStore = useAuthStore()
 	const { getToken } = storeToRefs(authStore)
@@ -20,13 +20,13 @@ export const useSizeStore = defineStore('size', () => {
   const sizeDatas = ref([])
 
   const getSizeDatas = ref( async () => {
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/size`
     try {
       let response = await axios.get(apiURL)
       if (response) {
         sizeDatas.value = [...response.data]
-        isAdminLoading.value = false
+        isLoading.value = false
       }
     } catch(e) {
       errorHandle.value(e)
@@ -35,7 +35,7 @@ export const useSizeStore = defineStore('size', () => {
   })
 
   const editSize = ref( async (size, type, target) => {
-    isAdminLoading.value = true
+    isLoading.value = true
     
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/size/${type}`
     const token = getToken.value()
@@ -60,7 +60,7 @@ export const useSizeStore = defineStore('size', () => {
   })
 
   const goToAddSize = ref( () => {
-    router.push({ name: 'adminSizeAdd'})
+    router.push({ name: 'sizeAdd'})
   })
 
   return { sizeDatas, getSizeDatas, editSize, goToAddSize }

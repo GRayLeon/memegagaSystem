@@ -8,7 +8,7 @@ import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const dialogStore = useDialogStore()
 	const { errorHandle } = storeToRefs(dialogStore)
@@ -36,15 +36,15 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   const login = ref( async loginAccount => {
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/auth/login`
     try {
       let response = await axios.post(apiURL, loginAccount)
       if (response) {
         setToken(response.data.token, response.data.expiresIn)
         checkLogin.value()
-        isAdminLoading.value = false
-        router.push({ name: 'adminHome'})
+        isLoading.value = false
+        router.push({ name: 'home'})
       }
     } catch(e) {
       errorHandle.value(e)
@@ -68,7 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const profile = ref({})
   const getProfile = ref( async () => {
-    isAdminLoading.value = true
+    isLoading.value = true
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/auth/profile`
     const token = getToken.value()
     try {
@@ -79,7 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
       })
       if (response) {
         profile.value = { ...response.data }
-        isAdminLoading.value = false
+        isLoading.value = false
       }
     } catch(e) {
       console.log(e)

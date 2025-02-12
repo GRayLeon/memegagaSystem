@@ -4,10 +4,10 @@
   import { onMounted } from 'vue'
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   onMounted( () => {
-    isAdminLoading.value = false
+    isLoading.value = false
   })
 </script>
 

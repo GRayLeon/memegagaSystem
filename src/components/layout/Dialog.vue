@@ -9,7 +9,7 @@
 	const { deleteAccount } = storeToRefs(accountStore)
 
   const loadStore = useLoadStore()
-	const { isAdminLoading } = storeToRefs(loadStore)
+	const { isLoading } = storeToRefs(loadStore)
 
   const dialogStore = useDialogStore()
 	const { dialogIsOpen, dialogStatus, dialogTitle, dialogInfo, dialogTarget, dialogData } = storeToRefs(dialogStore)
@@ -27,7 +27,7 @@
   const action = () => {
     console.log(dialogStatus.value, dialogTarget.value)
     if (dialogStatus.value == 'delete') {
-      if (dialogTarget.value == 'adminAccountList') {
+      if (dialogTarget.value == 'accountList') {
         deleteAccount.value(dialogData.value)
       }
     }
@@ -37,7 +37,7 @@
     if (dialogTarget.value == 'reload') {
       window.location.reload()
     } else if (dialogTarget.value == 'noRedirect') {
-      isAdminLoading.value = false
+      isLoading.value = false
     } else {
       router.push({ name: dialogTarget.value })
     }

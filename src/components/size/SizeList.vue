@@ -22,7 +22,7 @@
   }
 
   const goToEditSize = id => {
-    router.push({ path: `/admin/size/${id}`})
+    router.push({ path: `/size/${id}`})
   }
 </script>
 
