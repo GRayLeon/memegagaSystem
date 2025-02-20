@@ -28,7 +28,10 @@
   <div class="adminView">
     <div class="loginArea">
       <div class="loginBox" v-if="!isLogin">
-        <h1>登入產品管理系統</h1>
+        <div class="titleArea">
+          <h1>Eonion</h1>
+          <h2>Manage System</h2>
+        </div>
         <input
           type="text"
           v-model="loginAccount.account"

@@ -266,6 +266,23 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
+    .titleArea {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 16px;
+      border-bottom: #666 1px solid;
+      h1 {
+        font-size: 32px;
+        line-height: 28px;
+      }
+      h2 {
+        font-size: 20px;
+        line-height: 18px;
+      }
+    }
     > * {
       width: 350px;
     }

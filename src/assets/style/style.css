@@ -406,6 +406,23 @@ body {
   justify-content: center;
   gap: 16px;
 }
+.loginArea .loginBox .titleArea {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: #666 1px solid;
+}
+.loginArea .loginBox .titleArea h1 {
+  font-size: 32px;
+  line-height: 28px;
+}
+.loginArea .loginBox .titleArea h2 {
+  font-size: 20px;
+  line-height: 18px;
+}
 .loginArea .loginBox > * {
   width: 350px;
 }
@@ -697,7 +714,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: calc(100% - 100px);
+  width: calc(100% - 75px);
+  padding: 8px 0;
 }
 .inputItem .sizeList .sizeinputItem {
   display: flex;
@@ -737,6 +755,7 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  height: 30px;
 }
 .inputItem .sizeList .sizeinputItem .subHead {
   width: 48px;
@@ -805,6 +824,140 @@ body {
 }
 .buttonArea button {
   width: 125px;
+}
+
+.shapeList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 75px);
+}
+.shapeList .shapeInputArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  padding: 8px 0;
+  border-bottom: #333 1px solid;
+}
+.shapeList .shapeInputArea:last-child {
+  border-bottom: 0;
+}
+.shapeList .shapeInputItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.shapeList .shapeInputItem .subHead {
+  text-align: right;
+  line-height: 20px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: #666 1px solid;
+  border-radius: 8px;
+  color: #aaa;
+}
+.shapeList .shapeInputItem .imgArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.shapeList .shapeInputItem .imgArea .noImage, .shapeList .shapeInputItem .imgArea img {
+  width: 80px;
+  height: 80px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+  font-size: 14px;
+  padding: 0;
+}
+.shapeList .shapeInputItem .imgArea button {
+  padding: 4px 8px;
+  border-radius: 24px;
+  font-weight: 900;
+  border: #444 1px solid;
+  color: white;
+  font-size: 12px;
+  background-color: #333;
+  cursor: pointer;
+}
+.shapeList .shapeInputItem input {
+  width: 125px;
+  min-width: 125px;
+}
+.shapeList .shapeInputOption {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-right: 16px;
+}
+.shapeList .shapeInputOption .shapeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 24px;
+  font-weight: 900;
+  border: #444 1px solid;
+  color: #ccc;
+  background-color: #333;
+  cursor: pointer;
+}
+
+.tagListArea {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 75px);
+}
+.tagListArea .tagList {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: #333 1px solid;
+}
+.tagListArea .tagList .tagItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 16px;
+  border-radius: 24px;
+  font-weight: 900;
+  font-size: 14px;
+  border: #444 1px solid;
+}
+.tagListArea .tagList .tagItem .tagButton {
+  cursor: pointer;
+}
+
+.addButtonArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 0;
+}
+.addButtonArea .addInput {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+.addButtonArea .addInput input {
+  width: 125px;
+  min-width: 125px;
+}
+.addButtonArea button {
+  min-width: 75px;
+  padding: 8px 16px;
 }
 
 .adminDialog {

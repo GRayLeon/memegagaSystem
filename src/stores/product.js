@@ -85,7 +85,7 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const editProduct = ref( async (productInfo, selectedSizes, editType, selectedFile) => {
+  const editProduct = ref( async (productInfo, selectedSizes, editType, selectedFile, selectedShapeFiles, updateShapeFile) => {
     isLoading.value = true
     let type = null
     type = editType == 'create' ? 'add'
@@ -101,12 +101,21 @@ export const useProductStore = defineStore('product', () => {
     formData.append("parentCategory", productInfo.parentCategory)
     formData.append("status", productInfo.status)
     formData.append("sizes", JSON.stringify(selectedSizes))
+    formData.append("shapes", JSON.stringify(productInfo.shapes))
+    formData.append("tags", JSON.stringify(productInfo.tags))
     formData.append("basePrice", productInfo.basePrice)
     if (productInfo.imagePublicId) {
       formData.append("imagePublicId", productInfo.imagePublicId)
     }
     if (selectedFile) {
-      formData.append("image", selectedFile)
+      formData.append("mainImage", selectedFile)
+    }
+    if (selectedShapeFiles) {
+      console.log(selectedShapeFiles, updateShapeFile)
+      selectedShapeFiles.forEach( file => {
+        formData.append("shapeImages", file)
+      })
+      formData.append("updateShapes", JSON.stringify(updateShapeFile))
     }
     
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/product/${type}`

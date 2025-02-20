@@ -10,7 +10,7 @@
 <template>
   <div class="accountBox">
     <div class="webTitle">
-      <span>產品管理系統</span>
+      <span>Enoion Manage System</span>
     </div>
     <nav>
       <p>登入帳號 - {{ profile.account }} / {{ profile.type }}</p>

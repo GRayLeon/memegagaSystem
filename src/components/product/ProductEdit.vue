@@ -31,6 +31,15 @@
       en: '',
       zh: ''
     },
+    shapes: [
+      {
+        title: '',
+        scale: '',
+        imageURL: '',
+        imagePublicId: ''
+      }
+    ],
+    tags: [],
     status: 'draft',
     parentCategory: '',
     imageURL: '',
@@ -81,6 +90,7 @@
         }
       })
     }
+    checkShape()
   }
 
   const isEdit = computed( () => {
@@ -125,9 +135,79 @@
     return prices
   })
 
-  const backcardList = ( () => {
+  // shapes
+  const selectShapeFiles = ref([])
+  const previewShapeUrl = ref([])
+  const previewShapeName = ref(['請選擇圖片檔案'])
+  const updateShapeFile = ref([])
+
+  const isShapeChanging = ref([false])
+  const changeShapeImage = idx => {
+    isShapeChanging.value[idx] = true
+  }
+
+  const onShapeFileChange = (event, idx) => {
+    const file = event.target.files[0]
+    if (file) {
+      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      selectShapeFiles.value[idx] = newFile
+      previewShapeUrl.value[idx] = URL.createObjectURL(file)
+      previewShapeName.value[idx] = file.name
+      updateShapeFile.value.push( {
+        idx: idx,
+        name: newFile.name.split(".")[0]
+      })
+    } else {
+      previewShapeUrl.value[idx] = null
+      previewShapeName.value[idx] = '請選擇圖片檔案'
+      updateShapeFile.value.forEach( (file, findx) => {
+        if (file.idx == idx) {
+          updateShapeFile.value.splice(findx, 1)
+        }
+      })
+    }
+  }
+
+  const backcardList = () => {
     router.push({ name: 'productList'})
-  })
+  }
+
+  const checkButton = (method, idx, length) => {
+    let show = false
+    if (method == 'add' && idx == length - 1) { show = true }
+    if (method == 'remove' && length !== 0 && idx < length - 1 ) { show = true }
+    return show
+  }
+
+  const addShape = () => {
+    productInfo.value.shapes.push({
+        title: '',
+        scale: '',
+        imageURL: '',
+        imagePublicId: ''
+      })
+  }
+
+  const removeShape = idx => {
+    productInfo.value.shapes.splice(idx, 1)
+  }
+
+  const checkShape = () => {
+    if (productInfo.value.shapes.length == 0) {
+      addShape()
+    }
+  }
+
+  const tempTag = ref(null)
+
+  const addTag = () => {
+    productInfo.value.tags.push(tempTag.value)
+    tempTag.value = null
+  }
+  
+  const removeTag = idx => {
+    productInfo.value.tags.splice(idx, 1)
+  }
 
   onMounted( async () => {
     isLoading.value = true
@@ -274,14 +354,101 @@
         </div>
       </div>
     </div>
+    <div class="inputItem">
+      <div class="head">面狀</div>
+      <div class="shapeList">
+        <div
+          class="shapeInputArea"
+          v-for="(shape, idx) in productInfo.shapes">
+          <div class="shapeInputItem">
+            <div class="imgArea">
+              <img
+                :src="shape.imageURL"
+                v-if="shape.imageURL && !isShapeChanging[idx]">
+              <img
+                :src="previewShapeUrl[idx]"
+                v-else-if="previewShapeUrl[idx] && isShapeChanging[idx]">
+              <div class="noImage" v-else><span>沒有圖片</span></div>
+              <button
+                v-if="!isShapeChanging[idx] && !isArchived"
+                @click="changeShapeImage(idx)">
+                更改圖片
+              </button>
+              <div v-else-if="!isArchived" class="imageSelect">
+                <input type="file" accept=".jpg, .png" name="selectImage" :id="`selectImage-${idx}`" @change="onShapeFileChange($event, idx)">
+                <span>{{ previewShapeName[idx] }}</span>
+                <label :for="`selectImage-${idx}`">選擇檔案</label>
+              </div>
+            </div>
+          </div>
+          <div class="shapeInputItem">
+            <div class="subHead">規格</div>
+            <input
+              type="text"
+              v-model="shape.title"
+              placeholder="請輸入面狀規格" />
+          </div>
+          <div class="shapeInputItem">
+            <div class="subHead">倍率</div>
+            <input
+              type="number"
+              v-model="shape.scale"
+              placeholder="請輸入面狀倍率" />
+          </div>
+          <div class="shapeInputOption">
+            <div
+              class="shapeButton"
+              v-if="productInfo.shapes.length > 1"
+              @click="removeShape(idx)">
+              <span class="material-icons">close</span>
+            </div>
+          </div>
+        </div>
+        <div class="addButtonArea">
+          <button
+            class="smallButton"
+            @click="addShape()">
+            新增
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="inputItem">
+      <div class="head">標籤</div>
+      <div class="tagListArea">
+        <div class="tagList" v-if="productInfo.tags.length > 0">
+          <div class="tagItem" v-for="(tag, idx) in productInfo.tags">
+            <span>{{ tag }}</span>
+            <div
+              class="tagButton"
+              @click="removeTag(idx)">
+              <span class="material-icons">close</span>
+            </div>
+          </div>
+        </div>
+        <div class="addButtonArea">
+          <div class="addInput">
+            <input
+              type="text"
+              placeholder="請輸入標籤內容"
+              v-model="tempTag">
+            <button
+              class="smallButton"
+              @click="addTag()">
+              新增
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editProduct(productInfo, selectedSizes, 'edit', selectFile)">儲存編輯</button>
-      <button v-if="!isDraft" @click="editProduct(productInfo, selectedSizes, 'archive', selectFile)">封存商品</button>
+      <button @click="editProduct(productInfo, selectedSizes, 'edit', selectFile, selectShapeFiles, updateShapeFile)">儲存編輯</button>
+      <button v-if="!isDraft" @click="editProduct(productInfo, selectedSizes, 'archive', selectFile, selectShapeFiles, updateShapeFile)">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editProduct(productInfo, selectedSizes, 'create', selectFile)">創建草稿</button>
-      <button v-else @click="editProduct(productInfo, selectedSizes, 'save', selectFile)">儲存草稿</button>
-      <button @click="editProduct(productInfo, selectedSizes, 'add', selectFile)">上架商品</button>
+      <button v-if="!isEdit" @click="editProduct(productInfo, selectedSizes, 'create', selectFile, selectShapeFiles, updateShapeFile)">創建草稿</button>
+      <button v-else @click="editProduct(productInfo, selectedSizes, 'save', selectFile, selectShapeFiles, updateShapeFile)">儲存草稿</button>
+      <button @click="editProduct(productInfo, selectedSizes, 'add', selectFile, selectShapeFiles, updateShapeFile)">上架商品</button>
     </div>
   </div>
 </template>
