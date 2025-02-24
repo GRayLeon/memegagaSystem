@@ -90,6 +90,28 @@ const router = createRouter({
           ]
         },
         {
+          path: 'region',
+          name: 'region',
+          component: () => import('../components/RegionView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'regionList',
+              component: () => import('../components/region/RegionList.vue')
+            },
+            {
+              path: 'add',
+              name: 'regionAdd',
+              component: () => import('../components/region/RegionEdit.vue')
+            },
+            {
+              path: ':id',
+              name: 'regionEdit',
+              component: () => import('../components/region/RegionEdit.vue')
+            }
+          ]
+        },
+        {
           path: 'account',
           name: 'account',
           component: () => import('../components/AccountView.vue'),

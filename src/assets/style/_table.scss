@@ -27,6 +27,7 @@
   }
   td {
     font-size: 15px;
+    vertical-align: middle;
     &.lastLogin {
       font-size: 12px;
     }
@@ -67,6 +68,12 @@
           background-color: #aaa;
         }
       }
+    }
+    &.image img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      object-position: center;
     }
   }
 }

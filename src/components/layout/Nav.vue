@@ -22,6 +22,10 @@
         <span class="material-icons">crop_free</span>
         <span>規格管理</span>
       </RouterLink>
+      <RouterLink to="/region">
+        <span class="material-icons">location_on</span>
+        <span>地區管理</span>
+      </RouterLink>
       <RouterLink to="/account">
         <span class="material-icons">group</span>
         <span>帳號管理</span>

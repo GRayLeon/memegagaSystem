@@ -32,8 +32,9 @@
   img {
     width: 100%;
     height: 250px;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
+    border: #666 1px solid;
     border-radius: 8px;
     overflow: hidden;
   }
@@ -223,7 +224,7 @@
       .noImage, img {
         width: 80px;
         height: 80px;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
         font-size: 14px;
         padding: 0;

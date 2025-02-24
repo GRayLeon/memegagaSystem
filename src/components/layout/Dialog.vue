@@ -25,7 +25,6 @@
   }
 
   const action = () => {
-    console.log(dialogStatus.value, dialogTarget.value)
     if (dialogStatus.value == 'delete') {
       if (dialogTarget.value == 'accountList') {
         deleteAccount.value(dialogData.value)
