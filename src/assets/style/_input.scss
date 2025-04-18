@@ -43,20 +43,23 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px 8px 8px 16px;
+  padding: 8px 16px;
   min-width: 275px;
   border-radius: 8px;
   border: #666 1px solid;
   font-size: 18px;
   color: white;
   background-color: black;
+  &--column {
+    flex-direction: column;
+  }
   .head {
     width: 75px;
     font-size: 12px;
     line-height: 20px;
     color: #aaa;
   }
-  input, select {
+  input, select, textarea {
     width: calc( 100% - 75px );
     padding: 8px 0;
     line-height: 20px;
@@ -67,6 +70,11 @@
     &:disabled {
       opacity: .5;
     }
+  }
+  textarea {
+    height: 200px;
+    min-height: 200px;
+    color: white;
   }
   option {
     text-align: left;
@@ -84,7 +92,7 @@
       gap: 8px;
       width: 100%;
       padding-bottom: 8px;
-      border-bottom: #333 1px solid;
+      border-bottom: #222 1px solid;
       &.inactive {
         display: none;
       }
@@ -124,8 +132,15 @@
         color: #aaa;
       }
     }
+    input[type="number"] {
+      width: 125px;
+      min-width: 125px;
+      padding: 0;
+      line-height: 20px;
+      border-bottom: #666 1px solid;
+    }
   }
-  &:has(input:disabled), &:has(select:disabled) {
+  &:has(*:disabled) {
     background-color: #111;
     border-color: #444;
     .sizeList {
@@ -197,7 +212,7 @@
     gap: 24px;
     width: 100%;
     padding: 8px 0;
-    border-bottom: #333 1px solid;
+    border-bottom: #222 1px solid;
     &:last-child {
       border-bottom: 0;
     }
@@ -210,10 +225,7 @@
     .subHead {
       text-align: right;
       line-height: 20px;
-      padding: 4px 8px;
       font-size: 12px;
-      border: #666 1px solid;
-      border-radius: 8px;
       color: #aaa;
     }
     .imgArea {
@@ -222,11 +234,11 @@
       align-items: center;
       gap: 8px;
       .noImage, img {
-        width: 80px;
-        height: 80px;
+        width: 75px;
+        height: 75px;
         object-fit: contain;
         object-position: center;
-        font-size: 14px;
+        font-size: 12px;
         padding: 0;
       }
       button {
@@ -243,6 +255,11 @@
     input {
       width: 125px;
       min-width: 125px;
+      &[type="text"], &[type="number"] {
+        padding: 0;
+        line-height: 20px;
+        border-bottom: #666 1px solid;
+      }
     }
   }
   .shapeInputOption {
@@ -294,6 +311,97 @@
   }
 }
 
+
+.inputImgArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 360px;
+  .noImage, img {
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: contain;
+    object-position: center;
+    font-size: 12px;
+    padding: 0;
+  }
+  img {
+    background-color: white;
+  }
+  button {
+    padding: 4px 8px;
+    border-radius: 24px;
+    font-weight: 900;
+    border: #444 1px solid;
+    color: white;
+    font-size: 12px;
+    background-color: #333;
+    cursor: pointer;
+  }
+}
+
+.specList {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  li {
+    flex: 1;
+    a {
+      display: flex;
+      justify-content: center;
+      padding: 8px 0;
+      border: #444 1px solid;
+      border-radius: 8px;
+      color: #454545;
+      background-color: #1a1a1a;
+      text-decoration: none;
+      &.router-link-exact-active {
+        color: #aaa;
+        background-color: #111;
+      }
+    }
+  }
+}
+
+.subImages {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    padding: 6px 0;
+    li {
+      flex: 0 0 calc(100%/3 - 16px*2/3);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      .deleteImage {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        border-radius: 24px;
+        font-weight: 900;
+        border: #444 1px solid;
+        color: white;
+        font-size: 12px;
+        background-color: #333;
+        cursor: pointer;
+      }
+    }
+}
+
+.borderBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 24px;
+  border-radius: 16px;
+  border: #555 1px solid;
+}
+
 .addButtonArea {
   display: flex;
   flex-direction: row;
@@ -305,14 +413,27 @@
   .addInput {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 4px;
     input {
       width: 125px;
       min-width: 125px;
+      padding: 0;
+      line-height: 20px;
+      font-size: 14px;
+      border-bottom: #666 1px solid;
     }
   }
   button {
     min-width: 75px;
     padding: 8px 16px;
   }
+}
+
+.bottomButtonArea {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: #555 1px solid;
 }

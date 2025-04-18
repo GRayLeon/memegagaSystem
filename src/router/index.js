@@ -46,6 +46,28 @@ const router = createRouter({
           ]
         },
         {
+          path: 'project',
+          name: 'project',
+          component: () => import('../components/ProjectView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'projectList',
+              component: () => import('../components/project/ProjectList.vue')
+            },
+            {
+              path: 'add',
+              name: 'projectAdd',
+              component: () => import('../components/project/ProjectEdit.vue')
+            },
+            {
+              path: ':id',
+              name: 'projectEdit',
+              component: () => import('../components/project/ProjectEdit.vue')
+            }
+          ]
+        },
+        {
           path: 'size',
           name: 'size',
           component: () => import('../components/SizeView.vue'),
@@ -132,7 +154,39 @@ const router = createRouter({
               component: () => import('../components/account/AccountEdit.vue')
             }
           ]
-        }
+        },
+        {
+          path: 'spec',
+          name: 'spec',
+          component: () => import('../components/SpecView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'origin',
+              component: () => import('../components/spec/EditOrigin.vue')
+            },
+            {
+              path: 'appearance',
+              name: 'appearance',
+              component: () => import('../components/spec/EditAppearance.vue')
+            },
+            {
+              path: 'functionality',
+              name: 'functionality',
+              component: () => import('../components/spec/EditFunctionality.vue')
+            },
+            {
+              path: 'support',
+              name: 'support',
+              component: () => import('../components/spec/EditSupport.vue')
+            },
+            {
+              path: 'brand',
+              name: 'brand',
+              component: () => import('../components/spec/EditBrand.vue')
+            }
+          ]
+        },
       ]
     },
     {

@@ -2,19 +2,29 @@
   import { useProductStore } from '@/stores/product'
   import { useCategoryStore } from '@/stores/category'
   import { useSizeStore } from '@/stores/size.js'
+  import { useSpecStore } from '@/stores/spec'
   import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
 	import { useRoute, useRouter } from 'vue-router'
-  import { ref, computed, onMounted, onUpdated } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
 
   const productStore = useProductStore()
-	const { statusList, products, editProduct, deleteProduct } = storeToRefs(productStore)
+	const { 
+    products, selectSizes, selectFile,
+    selectSubImageFiles, updateSubImageFile,
+    selectShapeImageFiles, updateShapeImageFile,
+    selectColorImageFiles, updateColorImageFile,
+    editProduct
+  } = storeToRefs(productStore)
 
   const categoryStore = useCategoryStore()
 	const { categorys, getCategorys } = storeToRefs(categoryStore)
 
   const sizeStore = useSizeStore()
 	const { sizeDatas, getSizeDatas } = storeToRefs(sizeStore)
+
+  const specStore = useSpecStore()
+	const { getSpecDatas, specDatas } = storeToRefs(specStore)
 
   const loadStore = useLoadStore()
 	const { isLoading } = storeToRefs(loadStore)
@@ -31,15 +41,15 @@
       en: '',
       zh: ''
     },
-    shapes: [
-      {
-        title: '',
-        scale: '',
-        imageURL: '',
-        imagePublicId: ''
-      }
-    ],
+    subImages: [],
+    shapes: [],
+    colors: [],
     tags: [],
+    origin: '',
+    appearance: '',
+    functionality: '',
+    support: '',
+    brand: '',
     status: 'draft',
     parentCategory: '',
     imageURL: '',
@@ -47,51 +57,16 @@
   })
 
   const basePrice = ref(0)
-  
-  const selectedSizes = ref([])
 
-  const hasId = id => {
-    let isHas = false
-    selectedSizes.value.forEach( size => {
-      if (size.sizeId == id) { isHas = true }
+  const sumPrice = computed( () => {
+    let prices = {}
+    selectSizes.value.forEach( selectSize => {
+      let scale = sizeDatas.value.find(size => size._id == selectSize.sizeId).scale
+      let count = selectSize.count
+      prices[selectSize.sizeId] = productInfo.value.basePrice * scale - count
     })
-    return isHas
-  }
-
-  const setCount = id => {
-    if (selectedSizes.value.find( size => size.sizeId == id)) {
-      return selectedSizes.value.find( size => size.sizeId == id).count
-    }
-  }
-
-  const selectId = id => {
-    if (hasId(id)) {
-      selectedSizes.value = selectedSizes.value.filter( size => size.sizeId !== id)
-    } else {
-      selectedSizes.value.push({ sizeId: id, count: 0 })
-    }
-  }
-
-  const editCount = (inputCount, id) => {
-    selectedSizes.value.forEach( item => {
-      if (item.sizeId == id) {
-        item.count = inputCount
-      }
-    })
-  }
-
-  const initProductInfo = () => {
-    if (isEdit.value) {
-      products.value.data.forEach(product => {
-        if (product._id == route.params.id) {
-          productInfo.value = { ...product }
-          selectedSizes.value = [...productInfo.value.sizes]
-          basePrice.value = product.basePrice
-        }
-      })
-    }
-    checkShape()
-  }
+    return prices
+  })
 
   const isEdit = computed( () => {
     return route.params.id !== undefined
@@ -104,7 +79,7 @@
     return isEdit.value? '編輯' : '新增'
   })
 
-  const selectFile = ref(null)
+  // mainImages
   const previewUrl = ref(null)
   const previewName = ref('請選擇圖片檔案')
 
@@ -125,79 +100,183 @@
     }
   }
 
-  const sumPrice = computed( () => {
-    let prices = {}
-    selectedSizes.value.forEach( selectSize => {
-      let scale = sizeDatas.value.find(size => size._id == selectSize.sizeId).scale
-      let count = selectSize.count
-      prices[selectSize.sizeId] = productInfo.value.basePrice * scale - count
+  // sizes
+
+  const hasId = id => {
+    let isHas = false
+    selectSizes.value.forEach( size => {
+      if (size.sizeId == id) { isHas = true }
     })
-    return prices
-  })
-
-  // shapes
-  const selectShapeFiles = ref([])
-  const previewShapeUrl = ref([])
-  const previewShapeName = ref(['請選擇圖片檔案'])
-  const updateShapeFile = ref([])
-
-  const isShapeChanging = ref([false])
-  const changeShapeImage = idx => {
-    isShapeChanging.value[idx] = true
+    return isHas
   }
 
-  const onShapeFileChange = (event, idx) => {
+  const setCount = id => {
+    if (selectSizes.value.find( size => size.sizeId == id)) {
+      return selectSizes.value.find( size => size.sizeId == id).count
+    }
+  }
+
+  const selectId = id => {
+    if (hasId(id)) {
+      selectSizes.value = selectSizes.value.filter( size => size.sizeId !== id)
+    } else {
+      selectSizes.value.push({ sizeId: id, count: 0 })
+    }
+  }
+
+  const editCount = (inputCount, id) => {
+    selectSizes.value.forEach( item => {
+      if (item.sizeId == id) {
+        item.count = inputCount
+      }
+    })
+  }
+
+  // subImages
+  const previewSubImageUrl = ref([])
+  const previewSubImageName = ref(['請選擇圖片檔案'])
+
+  const isSubImageChanging = ref([])
+  const changeSubImage = idx => {
+    isSubImageChanging.value[idx] = true
+  }
+
+  const onSubImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
       const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
-      selectShapeFiles.value[idx] = newFile
-      previewShapeUrl.value[idx] = URL.createObjectURL(file)
-      previewShapeName.value[idx] = file.name
-      updateShapeFile.value.push( {
+      selectSubImageFiles.value[idx] = newFile
+      previewSubImageUrl.value[idx] = URL.createObjectURL(file)
+      previewSubImageName.value[idx] = file.name
+      updateSubImageFile.value.push( {
         idx: idx,
         name: newFile.name.split(".")[0]
       })
     } else {
-      previewShapeUrl.value[idx] = null
-      previewShapeName.value[idx] = '請選擇圖片檔案'
-      updateShapeFile.value.forEach( (file, findx) => {
+      previewSubImageUrl.value[idx] = null
+      previewSubImageName.value[idx] = '請選擇圖片檔案'
+      updateSubImageFile.value.forEach( (file, findx) => {
         if (file.idx == idx) {
-          updateShapeFile.value.splice(findx, 1)
+          updateSubImageFile.value.splice(findx, 1)
+        }
+      })
+    }
+  }
+  
+  const addSubImage = () => {
+    productInfo.value.subImages.push({
+      imageURL: '',
+      imagePublicId: ''
+    })
+    isSubImageChanging.value.push(true)
+  }
+
+  const removeSubImage = idx => {
+    productInfo.value.subImages.splice(idx, 1)
+    selectSubImageFiles.value.splice(idx, 1)
+    previewSubImageUrl.value.splice(idx, 1)
+    previewSubImageName.value.splice(idx, 1)
+    isSubImageChanging.value.splice(idx, 1)
+  }
+
+  // shapes
+  const previewShapeImageUrl = ref([])
+  const previewShapeImageName = ref(['請選擇圖片檔案'])
+
+  const isShapeImageChanging = ref([])
+  const changeShapeImage = idx => {
+    isShapeImageChanging.value[idx] = true
+  }
+
+  const onShapeImageFileChange = (event, idx) => {
+    const file = event.target.files[0]
+    if (file) {
+      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      selectShapeImageFiles.value[idx] = newFile
+      previewShapeImageUrl.value[idx] = URL.createObjectURL(file)
+      previewShapeImageName.value[idx] = file.name
+      updateShapeImageFile.value.push( {
+        idx: idx,
+        name: newFile.name.split(".")[0]
+      })
+    } else {
+      previewShapeImageUrl.value[idx] = null
+      previewShapeImageName.value[idx] = '請選擇圖片檔案'
+      updateShapeImageFile.value.forEach( (file, findx) => {
+        if (file.idx == idx) {
+          updateShapeImageFile.value.splice(findx, 1)
         }
       })
     }
   }
 
-  const backcardList = () => {
-    router.push({ name: 'productList'})
-  }
-
-  const checkButton = (method, idx, length) => {
-    let show = false
-    if (method == 'add' && idx == length - 1) { show = true }
-    if (method == 'remove' && length !== 0 && idx < length - 1 ) { show = true }
-    return show
-  }
-
   const addShape = () => {
     productInfo.value.shapes.push({
-        title: '',
-        scale: '',
-        imageURL: '',
-        imagePublicId: ''
-      })
+      title: '',
+      scale: '',
+      imageURL: '',
+      imagePublicId: ''
+    })
+    isShapeImageChanging.value.push(true)
   }
 
   const removeShape = idx => {
     productInfo.value.shapes.splice(idx, 1)
+    selectShapeImageFiles.value.splice(idx, 1)
+    previewShapeImageUrl.value.splice(idx, 1)
+    previewShapeImageName.value.splice(idx, 1)
+    isShapeImageChanging.value.splice(idx, 1)
   }
 
-  const checkShape = () => {
-    if (productInfo.value.shapes.length == 0) {
-      addShape()
+  // colors
+  const previewColorImageUrl = ref([])
+  const previewColorImageName = ref(['請選擇圖片檔案'])
+
+  const isColorImageChanging = ref([])
+  const changeColorImage = idx => {
+    isColorImageChanging.value[idx] = true
+  }
+
+  const onColorImageFileChange = (event, idx) => {
+    const file = event.target.files[0]
+    if (file) {
+      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      selectColorImageFiles.value[idx] = newFile
+      previewColorImageUrl.value[idx] = URL.createObjectURL(file)
+      previewColorImageName.value[idx] = file.name
+      updateColorImageFile.value.push( {
+        idx: idx,
+        name: newFile.name.split(".")[0]
+      })
+    } else {
+      previewColorImageUrl.value[idx] = null
+      previewColorImageName.value[idx] = '請選擇圖片檔案'
+      updateColorImageFile.value.forEach( (file, findx) => {
+        if (file.idx == idx) {
+          updateColorImageFile.value.splice(findx, 1)
+        }
+      })
     }
   }
+  
+  const addColor = () => {
+    productInfo.value.colors.push({
+      title: '',
+      imageURL: '',
+      imagePublicId: ''
+    })
+    isColorImageChanging.value.push(true)
+  }
 
+  const removeColor = idx => {
+    productInfo.value.colors.splice(idx, 1)
+    selectColorImageFiles.value.splice(idx, 1)
+    previewColorImageUrl.value.splice(idx, 1)
+    previewColorImageName.value.splice(idx, 1)
+    isColorImageChanging.value.splice(idx, 1)
+  }
+
+  // tags
   const tempTag = ref(null)
 
   const addTag = () => {
@@ -209,10 +288,36 @@
     productInfo.value.tags.splice(idx, 1)
   }
 
+  const backcardList = () => {
+    router.push({ name: 'productList'})
+  }
+
+  const initProductInfo = () => {
+    if (isEdit.value) {
+      products.value.data.forEach(product => {
+        if (product._id == route.params.id) {
+          productInfo.value = { ...product }
+          selectSizes.value = [...productInfo.value.sizes]
+          basePrice.value = product.basePrice
+        }
+      })
+      productInfo.value.subImages.forEach( subImage => {
+        isSubImageChanging.value.push(false)
+      })
+      productInfo.value.shapes.forEach( shape => {
+        isShapeImageChanging.value.push(false)
+      })
+      productInfo.value.colors.forEach( color => {
+        isColorImageChanging.value.push(false)
+      })
+    }
+  }
+
   onMounted( async () => {
     isLoading.value = true
     await getCategorys.value()
     await getSizeDatas.value()
+    await getSpecDatas.value()
     initProductInfo()
     if (!isEdit.value) {
       isChanging.value = true
@@ -249,9 +354,44 @@
       更改圖片
     </button>
     <div v-else-if="!isArchived" class="imageSelect">
-      <input type="file" accept=".jpg, .png" name="selectImage" id="selectImage" @change="onFileChange">
+      <input
+        type="file"
+        accept=".jpg, .png"
+        name="selectImage"
+        id="selectImage"
+        @change="onFileChange">
       <span>{{ previewName }}</span>
       <label for="selectImage">選擇檔案</label>
+    </div>
+    <div class="inputItem inputItem--column">
+      <ul class="subImages">
+        <li v-for="(subImage, idx) in productInfo.subImages">
+          <img
+            :src="subImage.imageURL"
+            v-if="subImage.imageURL && !isSubImageChanging[idx]">
+          <img
+            :src="previewSubImageUrl[idx]"
+            v-else-if="previewSubImageUrl[idx] && isSubImageChanging[idx]">
+          <div class="noImage" v-else><span>沒有圖片</span></div>
+          <button
+            v-if="!isSubImageChanging[idx] && !isArchived"
+            @click="changeSubImage(idx)">
+            更改圖片
+          </button>
+          <div v-else-if="!isArchived" class="imageSelect">
+            <input
+              type="file"
+              accept=".jpg, .png"
+              name="selectImage"
+              :id="`selectSubImage-${idx}`"
+              @change="onSubImageFileChange($event, idx)">
+            <span>{{ previewSubImageName[idx] }}</span>
+            <label :for="`selectSubImage-${idx}`">選擇檔案</label>
+          </div>
+          <div class="deleteImage" @click="removeSubImage(idx)"><span class="material-icons">close</span></div>
+        </li>
+      </ul>
+      <button @click="addSubImage()">新增圖片</button>
     </div>
     <div class="inputItem" v-if="isEdit">
       <div class="head">商品狀態</div>
@@ -267,7 +407,7 @@
         <option>草稿</option>
       </select>
     </div>
-    <div class="inputItem">
+    <!-- <div class="inputItem">
       <div class="head">分類</div>
       <select
         v-model="productInfo.parentCategory"
@@ -280,7 +420,7 @@
           {{ category.name['zh'] }}&emsp;/&emsp;{{ category.name['en'] }}
         </option>
       </select>
-    </div>
+    </div> -->
     <div class="inputItem">
       <div class="head">名稱(英)</div>
       <input
@@ -296,6 +436,40 @@
         :disabled="isArchived"
         placeholder="請輸入中文名稱"
         type="text"/>
+    </div>
+    <div class="inputItem">
+      <div class="head">型號</div>
+      <input
+        v-model="productInfo.model"
+        :disabled="isArchived"
+        placeholder="請如入型號"
+        type="text"/>
+    </div>
+    <div class="inputItem">
+      <div class="head">尺寸</div>
+      <input
+        v-model="productInfo.dimension"
+        :disabled="isArchived"
+        placeholder="請輸入尺寸"
+        type="text"/>
+    </div>
+    <div class="inputItem">
+      <div class="head">防滑度</div>
+      <input
+        v-model="productInfo.slipResistance"
+        :disabled="isArchived"
+        placeholder="請輸入防滑度"
+        type="number"/>
+    </div>
+    <div class="inputItem">
+      <div class="head">應用</div>
+      <select
+        v-model="productInfo.application"
+        :disabled="isArchived">
+        <option value="" disabled selected>請選擇應用場所</option>
+        <option value="exterior">室外</option>
+        <option value="interior">室內</option>
+      </select>
     </div>
     <div class="inputItem">
       <div class="head">敘述(英)</div>
@@ -321,7 +495,7 @@
         placeholder="請輸入基本價格"
         type="number"/>
     </div>
-    <div class="inputItem">
+    <!-- <div class="inputItem">
       <div class="head">尺寸</div>
       <div class="sizeList">
         <div
@@ -353,7 +527,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="inputItem">
       <div class="head">面狀</div>
       <div class="shapeList">
@@ -364,20 +538,24 @@
             <div class="imgArea">
               <img
                 :src="shape.imageURL"
-                v-if="shape.imageURL && !isShapeChanging[idx]">
+                v-if="shape.imageURL && !isShapeImageChanging[idx]">
               <img
-                :src="previewShapeUrl[idx]"
-                v-else-if="previewShapeUrl[idx] && isShapeChanging[idx]">
+                :src="previewShapeImageUrl[idx]"
+                v-else-if="previewShapeImageUrl[idx] && isShapeImageChanging[idx]">
               <div class="noImage" v-else><span>沒有圖片</span></div>
               <button
-                v-if="!isShapeChanging[idx] && !isArchived"
+                v-if="!isShapeImageChanging[idx] && !isArchived"
                 @click="changeShapeImage(idx)">
                 更改圖片
               </button>
               <div v-else-if="!isArchived" class="imageSelect">
-                <input type="file" accept=".jpg, .png" name="selectImage" :id="`selectImage-${idx}`" @change="onShapeFileChange($event, idx)">
-                <span>{{ previewShapeName[idx] }}</span>
-                <label :for="`selectImage-${idx}`">選擇檔案</label>
+                <input
+                  type="file"
+                  accept=".jpg, .png" name="selectImage" :id="`selectShapeImage-${idx}`"
+                  :disabled="isArchived"
+                  @change="onShapeImageFileChange($event, idx)">
+                <span>{{ previewShapeImageName[idx] }}</span>
+                <label :for="`selectShapeImage-${idx}`">選擇檔案</label>
               </div>
             </div>
           </div>
@@ -407,7 +585,65 @@
         <div class="addButtonArea">
           <button
             class="smallButton"
+            :disabled="isArchived"
             @click="addShape()">
+            新增
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="inputItem">
+      <div class="head">顏色</div>
+      <div class="shapeList">
+        <div
+          class="shapeInputArea"
+          v-for="(color, idx) in productInfo.colors">
+          <div class="shapeInputItem">
+            <div class="imgArea">
+              <img
+                :src="color.imageURL"
+                v-if="color.imageURL && !isColorImageChanging[idx]">
+              <img
+                :src="previewColorImageUrl[idx]"
+                v-else-if="previewColorImageUrl[idx] && isColorImageChanging[idx]">
+              <div class="noImage" v-else><span>沒有圖片</span></div>
+              <button
+                v-if="!isColorImageChanging[idx] && !isArchived"
+                @click="changeColorImage(idx)">
+                更改圖片
+              </button>
+              <div v-else-if="!isArchived" class="imageSelect">
+                <input
+                  type="file"
+                  accept=".jpg, .png" name="selectImage" :id="`selectColorImage-${idx}`"
+                  :disabled="isArchived"
+                  @change="onColorImageFileChange($event, idx)">
+                <span>{{ previewColorImageName[idx] }}</span>
+                <label :for="`selectColorImage-${idx}`">選擇檔案</label>
+              </div>
+            </div>
+          </div>
+          <div class="shapeInputItem">
+            <div class="subHead">編號</div>
+            <input
+              type="text"
+              v-model="color.title"
+              placeholder="請輸入顏色編號" />
+          </div>
+          <div class="shapeInputOption">
+            <div
+              class="shapeButton"
+              v-if="productInfo.colors.length > 1"
+              @click="removeColor(idx)">
+              <span class="material-icons">close</span>
+            </div>
+          </div>
+        </div>
+        <div class="addButtonArea">
+          <button
+            class="smallButton"
+            :disabled="isArchived"
+            @click="addColor()">
             新增
           </button>
         </div>
@@ -429,11 +665,13 @@
         <div class="addButtonArea">
           <div class="addInput">
             <input
+              v-if="!isArchived"
               type="text"
               placeholder="請輸入標籤內容"
               v-model="tempTag">
             <button
               class="smallButton"
+              :disabled="isArchived"
               @click="addTag()">
               新增
             </button>
@@ -442,13 +680,13 @@
       </div>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editProduct(productInfo, selectedSizes, 'edit', selectFile, selectShapeFiles, updateShapeFile)">儲存編輯</button>
-      <button v-if="!isDraft" @click="editProduct(productInfo, selectedSizes, 'archive', selectFile, selectShapeFiles, updateShapeFile)">封存商品</button>
+      <button @click="editProduct(productInfo, 'edit', selecteFile)">儲存編輯</button>
+      <button v-if="!isDraft" @click="editProduct(productInfo, 'archive', selecteFile)">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editProduct(productInfo, selectedSizes, 'create', selectFile, selectShapeFiles, updateShapeFile)">創建草稿</button>
-      <button v-else @click="editProduct(productInfo, selectedSizes, 'save', selectFile, selectShapeFiles, updateShapeFile)">儲存草稿</button>
-      <button @click="editProduct(productInfo, selectedSizes, 'add', selectFile, selectShapeFiles, updateShapeFile)">上架商品</button>
+      <button v-if="!isEdit" @click="editProduct(productInfo, 'create', selecteFile)">創建草稿</button>
+      <button v-else @click="editProduct(productInfo, 'save', selecteFile)">儲存草稿</button>
+      <button @click="editProduct(productInfo, 'add', selecteFile)">上架商品</button>
     </div>
   </div>
 </template>

@@ -41,6 +41,9 @@ export const useProductStore = defineStore('product', () => {
     }
   })
 
+  const selectSizes = ref([])
+  const selectFile = ref(null)
+
   const isGetProducts = ref(false)
 
   const getProducts = ref( async (page, pageSize, status, category, sort, order) => {
@@ -85,8 +88,18 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const editProduct = ref( async (productInfo, selectedSizes, editType, selectedFile, selectedShapeFiles, updateShapeFile) => {
+  const selectSubImageFiles = ref([])
+  const updateSubImageFile = ref([])
+
+  const selectShapeImageFiles = ref([])
+  const updateShapeImageFile = ref([])
+
+  const selectColorImageFiles = ref([])
+  const updateColorImageFile = ref([])
+
+  const editProduct = ref( async (productInfo, editType) => {
     isLoading.value = true
+
     let type = null
     type = editType == 'create' ? 'add'
     : editType == 'save' ? 'edit'
@@ -94,28 +107,58 @@ export const useProductStore = defineStore('product', () => {
     : editType == 'edit' ? 'edit'
     : editType == 'archive' ? (productInfo.status = 'archived', 'edit')
     : null
+
     const formData = new FormData()
-    formData.append("_id", productInfo._id)
-    formData.append("name", JSON.stringify(productInfo.name))
-    formData.append("description", JSON.stringify(productInfo.description))
+
+    if (type == 'edit') {
+      formData.append("_id", productInfo._id)
+    }
+
+    formData.append("model", productInfo.model)
+    formData.append("dimension", productInfo.dimension)
+    formData.append("slipResistance", productInfo.slipResistance)
+    formData.append("application", productInfo.application)
     formData.append("parentCategory", productInfo.parentCategory)
     formData.append("status", productInfo.status)
-    formData.append("sizes", JSON.stringify(selectedSizes))
-    formData.append("shapes", JSON.stringify(productInfo.shapes))
-    formData.append("tags", JSON.stringify(productInfo.tags))
     formData.append("basePrice", productInfo.basePrice)
+
+    formData.append("description", JSON.stringify(productInfo.description))
+    formData.append("name", JSON.stringify(productInfo.name))
+    formData.append("sizes", JSON.stringify(selectSizes.value))
+    formData.append("subImages", JSON.stringify(productInfo.subImages))
+    formData.append("shapes", JSON.stringify(productInfo.shapes))
+    formData.append("colors", JSON.stringify(productInfo.colors))
+    formData.append("tags", JSON.stringify(productInfo.tags))
+
+    formData.append("origin", JSON.stringify(productInfo.origin))
+    formData.append("appearance", JSON.stringify(productInfo.appearance))
+    formData.append("functionality", JSON.stringify(productInfo.functionality))
+    formData.append("support", JSON.stringify(productInfo.support))
+    formData.append("brand", JSON.stringify(productInfo.brand))
+    
     if (productInfo.imagePublicId) {
       formData.append("imagePublicId", productInfo.imagePublicId)
     }
-    if (selectedFile) {
-      formData.append("mainImage", selectedFile)
+    if (selectFile.value) {
+      formData.append("mainImage", selectFile.value)
     }
-    if (selectedShapeFiles) {
-      console.log(selectedShapeFiles, updateShapeFile)
-      selectedShapeFiles.forEach( file => {
+    if (selectSubImageFiles.value) {
+      selectSubImageFiles.value.forEach( file => {
+        formData.append("subImages", file)
+      })
+      formData.append("updateSubImages", JSON.stringify(updateSubImageFile.value))
+    }
+    if (selectShapeImageFiles.value) {
+      selectShapeImageFiles.value.forEach( file => {
         formData.append("shapeImages", file)
       })
-      formData.append("updateShapes", JSON.stringify(updateShapeFile))
+      formData.append("updateShapeImages", JSON.stringify(updateShapeImageFile.value))
+    }
+    if (selectColorImageFiles.value) {
+      selectColorImageFiles.value.forEach( file => {
+        formData.append("colorImages", file)
+      })
+      formData.append("updateColorImages", JSON.stringify(updateColorImageFile.value))
     }
     
     const apiURL = `${import.meta.env.VITE_APP_API_URL}/product/${type}`
@@ -160,5 +203,12 @@ export const useProductStore = defineStore('product', () => {
     router.push({ name: 'productAdd'})
   })
 
-  return { statusList, page, pageSize, category, status, sort, order, products, getProducts, isGetProducts, editProduct, deleteProduct, goToAddProduct }
+  return { 
+    statusList, page, pageSize, category, status, sort, order, 
+    products, selectSizes,
+    selectSubImageFiles, updateSubImageFile,
+    selectShapeImageFiles, updateShapeImageFile,
+    selectColorImageFiles, updateColorImageFile,
+    getProducts, isGetProducts, editProduct, deleteProduct, goToAddProduct
+  }
 })

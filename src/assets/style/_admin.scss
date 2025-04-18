@@ -65,10 +65,14 @@
         text-decoration: none;
         color: #aaa;
         cursor: pointer;
-        &:hover, &.router-link-exact-active {
+        &:hover, &:nth-child(n + 2).router-link-active {
           color: white;
           background-color: #222;
         }
+      }
+      &:first-child a.router-link-exact-active {
+        color: white;
+        background-color: #222;
       }
     }
   }
@@ -160,10 +164,22 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    height: 45px;
     .buttonTitle {
       display: flex;
       flex-direction: row;
       align-items: center;
+      width: 100%;
+      &--add {
+        justify-content: space-between;
+        h1 {
+          font-size: 16px;
+        }
+        button {
+          padding: 4px 16px;
+          font-size: 12px;
+        }
+      }
       .backButton {
         display: flex;
         flex-direction: column;

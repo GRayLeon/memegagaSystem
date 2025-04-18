@@ -39,8 +39,10 @@
         <input
           type="password"
           v-model="loginAccount.password"
-          placeholder="請輸入密碼">
-        <button @click="login(loginAccount)">登入</button>
+          placeholder="請輸入密碼"
+          @keydown.enter="login(loginAccount)">
+        <button
+          @click="login(loginAccount)">登入</button>
       </div>
     </div>
   </div>

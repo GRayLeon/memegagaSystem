@@ -117,6 +117,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  background-color: #111;
+}
+
 body {
   font-family: "Open Sans", "Noto Sans TC", sans-serif;
 }
@@ -211,7 +215,11 @@ body {
   color: #aaa;
   cursor: pointer;
 }
-.adminView .mainNav nav a:hover, .adminView .mainNav nav a.router-link-exact-active {
+.adminView .mainNav nav a:hover, .adminView .mainNav nav a:nth-child(n+2).router-link-active {
+  color: white;
+  background-color: #222;
+}
+.adminView .mainNav nav:first-child a.router-link-exact-active {
   color: white;
   background-color: #222;
 }
@@ -299,11 +307,23 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  height: 45px;
 }
 .adminView .title .buttonTitle {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+}
+.adminView .title .buttonTitle--add {
+  justify-content: space-between;
+}
+.adminView .title .buttonTitle--add h1 {
+  font-size: 16px;
+}
+.adminView .title .buttonTitle--add button {
+  padding: 4px 16px;
+  font-size: 12px;
 }
 .adminView .title .buttonTitle .backButton {
   display: flex;
@@ -691,7 +711,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px 8px 8px 16px;
+  padding: 8px 16px;
   min-width: 275px;
   border-radius: 8px;
   border: #666 1px solid;
@@ -699,13 +719,16 @@ body {
   color: white;
   background-color: black;
 }
+.inputItem--column {
+  flex-direction: column;
+}
 .inputItem .head {
   width: 75px;
   font-size: 12px;
   line-height: 20px;
   color: #aaa;
 }
-.inputItem input, .inputItem select {
+.inputItem input, .inputItem select, .inputItem textarea {
   width: calc(100% - 75px);
   padding: 8px 0;
   line-height: 20px;
@@ -714,8 +737,13 @@ body {
   background-color: transparent;
   outline: none;
 }
-.inputItem input:disabled, .inputItem select:disabled {
+.inputItem input:disabled, .inputItem select:disabled, .inputItem textarea:disabled {
   opacity: 0.5;
+}
+.inputItem textarea {
+  height: 200px;
+  min-height: 200px;
+  color: white;
 }
 .inputItem option {
   text-align: left;
@@ -734,7 +762,7 @@ body {
   gap: 8px;
   width: 100%;
   padding-bottom: 8px;
-  border-bottom: #333 1px solid;
+  border-bottom: #222 1px solid;
 }
 .inputItem .sizeList .sizeinputItem.inactive {
   display: none;
@@ -774,11 +802,18 @@ body {
   font-size: 12px;
   color: #aaa;
 }
-.inputItem:has(input:disabled), .inputItem:has(select:disabled) {
+.inputItem .sizeList input[type=number] {
+  width: 125px;
+  min-width: 125px;
+  padding: 0;
+  line-height: 20px;
+  border-bottom: #666 1px solid;
+}
+.inputItem:has(*:disabled) {
   background-color: #111;
   border-color: #444;
 }
-.inputItem:has(input:disabled) .sizeList, .inputItem:has(select:disabled) .sizeList {
+.inputItem:has(*:disabled) .sizeList {
   opacity: 0.5;
 }
 
@@ -849,7 +884,7 @@ body {
   gap: 24px;
   width: 100%;
   padding: 8px 0;
-  border-bottom: #333 1px solid;
+  border-bottom: #222 1px solid;
 }
 .shapeList .shapeInputArea:last-child {
   border-bottom: 0;
@@ -863,10 +898,7 @@ body {
 .shapeList .shapeInputItem .subHead {
   text-align: right;
   line-height: 20px;
-  padding: 4px 8px;
   font-size: 12px;
-  border: #666 1px solid;
-  border-radius: 8px;
   color: #aaa;
 }
 .shapeList .shapeInputItem .imgArea {
@@ -876,13 +908,13 @@ body {
   gap: 8px;
 }
 .shapeList .shapeInputItem .imgArea .noImage, .shapeList .shapeInputItem .imgArea img {
-  width: 80px;
-  height: 80px;
+  width: 75px;
+  height: 75px;
   -o-object-fit: contain;
      object-fit: contain;
   -o-object-position: center;
      object-position: center;
-  font-size: 14px;
+  font-size: 12px;
   padding: 0;
 }
 .shapeList .shapeInputItem .imgArea button {
@@ -898,6 +930,11 @@ body {
 .shapeList .shapeInputItem input {
   width: 125px;
   min-width: 125px;
+}
+.shapeList .shapeInputItem input[type=text], .shapeList .shapeInputItem input[type=number] {
+  padding: 0;
+  line-height: 20px;
+  border-bottom: #666 1px solid;
 }
 .shapeList .shapeInputOption {
   flex: 1;
@@ -947,6 +984,98 @@ body {
   cursor: pointer;
 }
 
+.inputImgArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 360px;
+}
+.inputImgArea .noImage, .inputImgArea img {
+  width: 75px !important;
+  height: 75px !important;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center;
+     object-position: center;
+  font-size: 12px;
+  padding: 0;
+}
+.inputImgArea img {
+  background-color: white;
+}
+.inputImgArea button {
+  padding: 4px 8px;
+  border-radius: 24px;
+  font-weight: 900;
+  border: #444 1px solid;
+  color: white;
+  font-size: 12px;
+  background-color: #333;
+  cursor: pointer;
+}
+
+.specList {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.specList li {
+  flex: 1;
+}
+.specList li a {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  border: #444 1px solid;
+  border-radius: 8px;
+  color: #454545;
+  background-color: #1a1a1a;
+  text-decoration: none;
+}
+.specList li a.router-link-exact-active {
+  color: #aaa;
+  background-color: #111;
+}
+
+.subImages {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+  padding: 6px 0;
+}
+.subImages li {
+  flex: 0 0 calc(33.3333333333% - 10.6666666667px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.subImages li .deleteImage {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 24px;
+  font-weight: 900;
+  border: #444 1px solid;
+  color: white;
+  font-size: 12px;
+  background-color: #333;
+  cursor: pointer;
+}
+
+.borderBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 24px;
+  border-radius: 16px;
+  border: #555 1px solid;
+}
+
 .addButtonArea {
   display: flex;
   flex-direction: row;
@@ -959,15 +1088,28 @@ body {
 .addButtonArea .addInput {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 4px;
 }
 .addButtonArea .addInput input {
   width: 125px;
   min-width: 125px;
+  padding: 0;
+  line-height: 20px;
+  font-size: 14px;
+  border-bottom: #666 1px solid;
 }
 .addButtonArea button {
   min-width: 75px;
   padding: 8px 16px;
+}
+
+.bottomButtonArea {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: #555 1px solid;
 }
 
 .adminDialog {
