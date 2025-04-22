@@ -14,6 +14,10 @@
         <span class="material-icons">list_alt</span>
         <span>產品管理</span>
       </RouterLink>
+      <RouterLink to="/spec">
+        <span class="material-icons">crop_free</span>
+        <span>規格管理</span>
+      </RouterLink>
       <RouterLink to="/project">
         <span class="material-icons">folder</span>
         <span>專案管理</span>
@@ -22,18 +26,10 @@
         <span class="material-icons">article</span>
         <span>貼文管理</span>
       </RouterLink>
-      <!-- <RouterLink to="/category">
-        <span class="material-icons">category</span>
-        <span>分類管理</span>
-      </RouterLink> -->
-      <RouterLink to="/spec">
-        <span class="material-icons">crop_free</span>
-        <span>規格管理</span>
+      <RouterLink to="/pages">
+        <span class="material-icons">description</span>
+        <span>頁面管理</span>
       </RouterLink>
-      <!-- <RouterLink to="/region">
-        <span class="material-icons">location_on</span>
-        <span>地區管理</span>
-      </RouterLink> -->
       <RouterLink to="/account">
         <span class="material-icons">group</span>
         <span>帳號管理</span>

@@ -209,6 +209,23 @@ const router = createRouter({
             }
           ]
         },
+        {
+          path: 'pages',
+          name: 'pages',
+          component: () => import('../components/PagesView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'vision',
+              component: () => import('../components/pages/EditVision.vue')
+            },
+            {
+              path: 'partner',
+              name: 'partner',
+              component: () => import('../components/pages/EditPartner.vue')
+            }
+          ]
+        }
       ]
     },
     {

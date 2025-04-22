@@ -41,7 +41,10 @@
         position: 'image-top'
       },
       article: [{
-        text: '',
+        text: {
+          en: '',
+          zh: ''
+        },
         imageURL: '',
         imagePublicId: ''
       }]
@@ -149,7 +152,10 @@
         position: 'image-top'
       },
       article: [{
-        text: '',
+        text: {
+          en: '',
+          zh: ''
+        },
         imageURL: '',
         imagePublicId: ''
       }]
@@ -272,7 +278,10 @@
 
     } else {
       newsInfo.value.content[listIdx].article.push({
-        text: '',
+        text: {
+          en: '',
+          zh: ''
+        },
         imageURL: '',
         imagePublicId: ''
       })
@@ -387,6 +396,8 @@
                 <span v-if="findTarget(previewImageName, listIdx, idx)">{{ findTarget(previewImageName, listIdx, idx).name }}</span>
                 <label :for="`selectImage-${listIdx}-${idx}`">選擇檔案</label>
               </div>
+              <textarea v-model="article.text.en" placeholder="請輸入英文內容"></textarea>
+              <textarea v-model="article.text.zh" placeholder="請輸入中文內容"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>
