@@ -1,16 +1,16 @@
 <script setup>
-  import { useProjectStore } from '@/stores/project'
+  import { useNewsStore } from '@/stores/news'
   import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
 	import { useRoute, useRouter } from 'vue-router'
   import { ref, computed, watch, onMounted } from 'vue';
 
-  const projectStore = useProjectStore()
+  const newsStore = useNewsStore()
 	const { 
-    projects,
-    selectImageFiles, updateImageFile,
-    editProject
-  } = storeToRefs(projectStore)
+    news,
+    selectFile, selectImageFiles, updateImageFile,
+    editNews
+  } = storeToRefs(newsStore)
 
   const loadStore = useLoadStore()
 	const { isLoading } = storeToRefs(loadStore)
@@ -18,10 +18,15 @@
   const route = useRoute()
   const router = useRouter()
 
-  const projectInfo = ref({
-    title: '',
-    category: '',
-    artist: '',
+  const newsInfo = ref({
+    topic: {
+      en: '',
+      zh: ''
+    },
+    status: 'draft',
+    source: '',
+    imageURL: '',
+    imagePublicId: '',
     description: {
       en: '',
       zh: ''
@@ -30,15 +35,17 @@
       en: '',
       zh: ''
     },
-    imageList: [{
-      class: '',
-      images: [{
+    content: [{
+      layout: {
+        direction: 'single-vertical',
+        position: 'image-top'
+      },
+      article: [{
+        text: '',
         imageURL: '',
         imagePublicId: ''
       }]
-    }],
-    status: 'draft',
-    tags: []
+    }]
   })
 
   const isEdit = computed( () => {
@@ -52,12 +59,33 @@
     return isEdit.value? '編輯' : '新增'
   })
 
-  // projectImages
+  // mainImages
+  const previewUrl = ref(null)
+  const previewName = ref('請選擇圖片檔案')
+
+  const isChanging = ref(false)
+  const changeImage = () => {
+    isChanging.value = true
+  }
+
+  const onFileChange = event => {
+    const file = event.target.files[0]
+    if (file) {
+      selectFile.value = file
+      previewUrl.value = URL.createObjectURL(file)
+      previewName.value = file.name
+    } else {
+      previewUrl.value = null
+      previewName.value = '請選擇圖片檔案'
+    }
+  }
+
+  // newsImages
   const previewImageUrl = ref([])
   const previewImageName = ref([])
   const isImageChanging = ref([])
 
-  const changeImage = (listIdx, idx) => {
+  const changeImages = (listIdx, idx) => {
     const target = isImageChanging.value.find( item =>
       item.index[0] === listIdx && item.index[1] === idx
     )
@@ -115,23 +143,27 @@
   }
   
   const addImage = () => {
-    projectInfo.value.imageList.push({
-      class: 'single',
-      images: [{
+    newsInfo.value.content.push({
+      layout: {
+        direction: 'single-vertical',
+        position: 'image-top'
+      },
+      article: [{
+        text: '',
         imageURL: '',
         imagePublicId: ''
       }]
     })
     isImageChanging.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [newsInfo.value.content.length - 1, 0],
       isChange: true
     })
     previewImageUrl.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [newsInfo.value.content.length - 1, 0],
       url: ''
     })
     previewImageName.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [newsInfo.value.content.length - 1, 0],
       name: '請選擇圖片檔案'
     })
   }
@@ -144,38 +176,26 @@
     })
   }
   const removeImage = idx => {
-    projectInfo.value.imageList.splice(idx, 1)
+    newsInfo.value.content.splice(idx, 1)
     removeParent(selectImageFiles.value, idx)
     removeParent(previewImageUrl.value, idx)
     removeParent(previewImageName.value, idx)
     removeParent(isImageChanging.value, idx)
   }
 
-  // tags
-  const tempTag = ref(null)
-
-  const addTag = () => {
-    projectInfo.value.tags.push(tempTag.value)
-    tempTag.value = null
-  }
-  
-  const removeTag = idx => {
-    projectInfo.value.tags.splice(idx, 1)
-  }
-
   const backcardList = () => {
-    router.push({ name: 'projectList'})
+    router.push({ name: 'newsList'})
   }
 
-  const initProjectInfo = () => {
+  const initNewsInfo = () => {
     if (isEdit.value) {
-      projects.value.data.forEach( project => {
-        if (project._id == route.params.id) {
-          projectInfo.value = { ...project }
+      news.value.data.forEach( news => {
+        if (news._id == route.params.id) {
+          newsInfo.value = { ...news }
         }
       })
-      projectInfo.value.imageList.forEach( (list, listIdx) => {
-        list.images.forEach( (image, idx) => {
+      newsInfo.value.content.forEach( (item, listIdx) => {
+        item.article.forEach( (image, idx) => {
           selectImageFiles.value.push({
             index: [listIdx, idx],
             file: null
@@ -220,7 +240,7 @@
         isChange: false
       })
     }
-    if (projectInfo.value.imageList.length == 0) {
+    if (newsInfo.value.content.length == 0) {
       previewImageUrl.value.push({
         index: [0, 0],
         url: null
@@ -237,9 +257,9 @@
   }
 
   const onClassChange = (listIdx) => {
-    const type = projectInfo.value.imageList[listIdx].class
+    const type = newsInfo.value.content[listIdx].layout.direction.split('_')[0]
     if (type == 'single') {
-      projectInfo.value.imageList[listIdx].images.splice(1, 1)
+      newsInfo.value.content[listIdx].article.splice(1, 1)
 
       const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
       isImageChanging.value.splice(indexOf(changeTarget), 1)
@@ -251,7 +271,8 @@
       previewImageName.value.splice(indexOf(nameTarget), 1)
 
     } else {
-      projectInfo.value.imageList[listIdx].images.push({
+      newsInfo.value.content[listIdx].article.push({
+        text: '',
         imageURL: '',
         imagePublicId: ''
       })
@@ -272,10 +293,10 @@
 
   onMounted( () => {
     isLoading.value = true
-    initProjectInfo()
-    if (projectInfo.value.status == 'draft') {
+    initNewsInfo()
+    if (newsInfo.value.status == 'draft') {
       isDraft.value = true
-    } else if (projectInfo.value.status == 'archived') {
+    } else if (newsInfo.value.status == 'archived') {
       isArchived.value = true
     }
   })
@@ -288,35 +309,72 @@
       <div class="backButton" @click="backcardList()">
         <span class="material-icons">chevron_left</span>
       </div>
-      <h1>{{ typeWording }}專案</h1>
+      <h1>{{ typeWording }}貼文</h1>
     </div>
   </div>
   <div class="editArea">
+    <img
+      :src="newsInfo.imageURL"
+      v-if="newsInfo.imageURL && !isChanging">
+    <img
+      :src="previewUrl"
+      v-else-if="previewUrl && isChanging">
+    <div class="noImage" v-else><span>沒有圖片</span></div>
+    <button
+      v-if="!isChanging && !isArchived"
+      @click="changeImage">
+      更改圖片
+    </button>
+    <div v-else-if="!isArchived" class="imageSelect">
+      <input
+        type="file"
+        accept=".jpg, .png"
+        name="selectImage"
+        id="selectImage"
+        @change="onFileChange">
+      <span>{{ previewName }}</span>
+      <label for="selectImage">選擇檔案</label>
+    </div>
     <div class="inputItem inputItem--column">
       <ul class="projectImages">
-        <li v-for="(imageList, listIdx) in projectInfo.imageList">
-          <div class="selectItem">
-            <div class="head">排列形式</div>
-            <select
-              v-model="imageList.class"
-              @change="onClassChange(listIdx)">
-              <option value="" selected disabled>請選擇排列形式</option>
-              <option value="single">單張滿版</option>
-              <option value="double">兩張並列</option>
-            </select>
+        <li v-for="(item, listIdx) in newsInfo.content">
+          <div class="selectItemArea">
+            <div class="selectItem">
+              <div class="head">排列形式</div>
+              <select
+                v-model="item.layout.direction"
+                @change="onClassChange(listIdx)">
+                <option value="" selected disabled>請選擇排列形式</option>
+                <option value="single-vertical">單張垂直</option>
+                <option value="double-vertical">兩張垂直</option>
+                <option value="single-horizon">單張平行</option>
+                <option value="double-horizon">兩張平行</option>
+              </select>
+            </div>
+            <div class="selectItem">
+              <div class="head">圖片位置</div>
+              <select
+                v-model="item.layout.position">
+                <option value="" selected disabled>請選擇圖片位置</option>
+                <option value="image-left">置左</option>
+                <option value="image-right">置右</option>
+                <option value="image-top">置頂</option>
+                <option value="image-bottom">置底</option>
+              </select>
+            </div>
           </div>
           <div class="imageList">
-            <div class="imageList__image" v-for="(image, idx) in imageList.images">
+            <div class="imageList__image" v-for="(article, idx) in item.article">
               <img
-                :src="image.imageURL"
-                v-if="image.imageURL && !findTarget(isImageChanging, listIdx, idx).isChange">
+                :src="article.imageURL"
+                v-if="article.imageURL && !findTarget(isImageChanging, listIdx, idx).isChange">
               <img
                 :src="findTarget(previewImageUrl, listIdx, idx) && findTarget(previewImageUrl, listIdx, idx).url"
                 v-else-if="findTarget(previewImageUrl, listIdx, idx) && findTarget(previewImageUrl, listIdx, idx).url && findTarget(isImageChanging, listIdx, idx).isChange">
               <div class="noImage" v-else><span>沒有圖片</span></div>
               <button
                 v-if="findTarget(isImageChanging, listIdx, idx) && !findTarget(isImageChanging, listIdx, idx).isChange && !isArchived"
-                @click="changeImage(listIdx, idx)">
+                @click="changeImages(listIdx, idx)">
                 更改圖片
               </button>
               <div v-else-if="!isArchived" class="imageSelect">
@@ -340,7 +398,7 @@
       <div class="head">商品狀態</div>
       <select
         v-if="!isDraft"
-        v-model="projectInfo.status"
+        v-model="newsInfo.status"
         :disabled="isArchived">
         <option value="" disabled>請選擇專案狀態</option>
         <option value="active">上架</option>
@@ -351,35 +409,33 @@
       </select>
     </div>
     <div class="inputItem">
-      <div class="head">名稱</div>
+      <div class="head">標題(英)</div>
       <input
-        v-model="projectInfo.title"
+        v-model="newsInfo.topic.en"
         :disabled="isArchived"
-        placeholder="請如入專案名稱"
+        placeholder="請如入英文標題"
         type="text"/>
     </div>
     <div class="inputItem">
-      <div class="head">分類</div>
-      <select
-        v-model="projectInfo.category"
-        :disabled="isArchived">
-        <option disabled selected>請選擇專案分類</option>
-        <option value="Commercial Space">Commercial Space</option>
-        <option value="Residence">Residence</option>
-      </select>
+      <div class="head">標題(中)</div>
+      <input
+        v-model="newsInfo.topic.zh"
+        :disabled="isArchived"
+        placeholder="請如入中文標題"
+        type="text"/>
     </div>
     <div class="inputItem">
-      <div class="head">作者</div>
+      <div class="head">來源</div>
       <input
-        v-model="projectInfo.artist"
+        v-model="newsInfo.source"
         :disabled="isArchived"
-        placeholder="請輸入作者"
+        placeholder="請輸入來源"
         type="text"/>
     </div>
     <div class="inputItem">
       <div class="head">敘述(英)</div>
       <textarea
-        v-model="projectInfo.description.en"
+        v-model="newsInfo.description.en"
         :disabled="isArchived"
         placeholder="請輸入英文敘述"
         type="text"></textarea>
@@ -387,7 +443,7 @@
     <div class="inputItem">
       <div class="head">敘述(中)</div>
       <textarea
-        v-model="projectInfo.description.zh"
+        v-model="newsInfo.description.zh"
         :disabled="isArchived"
         placeholder="請輸入中文敘述"
         type="text"></textarea>
@@ -395,7 +451,7 @@
     <div class="inputItem">
       <div class="head">詳細內容(英)</div>
       <textarea
-        v-model="projectInfo.detail.en"
+        v-model="newsInfo.detail.en"
         :disabled="isArchived"
         placeholder="請輸入英文敘述"
         type="text"></textarea>
@@ -403,49 +459,19 @@
     <div class="inputItem">
       <div class="head">詳細內容(中)</div>
       <textarea
-        v-model="projectInfo.detail.zh"
+        v-model="newsInfo.detail.zh"
         :disabled="isArchived"
         placeholder="請輸入中文敘述"
         type="text"></textarea>
     </div>
-    <div class="inputItem">
-      <div class="head">標籤</div>
-      <div class="tagListArea">
-        <div class="tagList" v-if="projectInfo.tags.length > 0">
-          <div class="tagItem" v-for="(tag, idx) in projectInfo.tags">
-            <span>{{ tag }}</span>
-            <div
-              class="tagButton"
-              @click="removeTag(idx)">
-              <span class="material-icons">close</span>
-            </div>
-          </div>
-        </div>
-        <div class="addButtonArea">
-          <div class="addInput">
-            <input
-              v-if="!isArchived"
-              type="text"
-              placeholder="請輸入標籤內容"
-              v-model="tempTag">
-            <button
-              class="smallButton"
-              :disabled="isArchived"
-              @click="addTag()">
-              新增
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editProject(projectInfo, 'edit')">儲存編輯</button>
-      <button v-if="!isDraft" @click="editProject(projectInfo, 'archive')">封存商品</button>
+      <button @click="editNews(newsInfo, 'edit')">儲存編輯</button>
+      <button v-if="!isDraft" @click="editNews(newsInfo, 'archive')">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editProject(projectInfo, 'create')">創建草稿</button>
-      <button v-else @click="editProject(projectInfo, 'save')">儲存草稿</button>
-      <button @click="editProject(projectInfo, 'add')">上架專案</button>
+      <button v-if="!isEdit" @click="editNews(newsInfo, 'create')">創建草稿</button>
+      <button v-else @click="editNews(newsInfo, 'save')">儲存草稿</button>
+      <button @click="editNews(newsInfo, 'add')">上架貼文</button>
     </div>
   </div>
 </template>

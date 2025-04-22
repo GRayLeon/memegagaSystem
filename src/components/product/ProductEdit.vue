@@ -327,6 +327,12 @@
     } else if (productInfo.value.status == 'archived') {
       isArchived.value = true
     }
+    updateSubImageFile.value = []
+    updateShapeImageFile.value = []
+    updateColorImageFile.value = []
+    selectSubImageFiles.value = []
+    selectShapeImageFiles.value = []
+    selectColorImageFiles.value = []
   })
 
 </script>

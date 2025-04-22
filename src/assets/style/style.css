@@ -721,6 +721,7 @@ body {
 }
 .inputItem--column {
   flex-direction: column;
+  padding: 16px;
 }
 .inputItem .head {
   width: 75px;
@@ -1110,6 +1111,67 @@ body {
   justify-content: center;
   padding-top: 16px;
   border-top: #555 1px solid;
+}
+
+.projectImages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding-bottom: 16px;
+}
+.projectImages li {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-bottom: #555 1px solid;
+}
+.projectImages .selectItemArea {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  width: 100%;
+}
+.projectImages .selectItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.projectImages .selectItem select {
+  border-bottom: #555 1px solid;
+  width: 120px;
+  padding: 0;
+  line-height: 24px;
+}
+.projectImages .imageList {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+.projectImages .imageList__image {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: calc(50% - 16px - 12px);
+}
+.projectImages .deleteImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 24px;
+  font-weight: 900;
+  border: #444 1px solid;
+  color: white;
+  font-size: 12px;
+  background-color: #333;
+  cursor: pointer;
 }
 
 .adminDialog {

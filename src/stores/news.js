@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import router from '@/router'
 
-export const useProjectStore = defineStore('project', () => {
+export const useNewsStore = defineStore('news', () => {
   const loadStore = useLoadStore()
 	const { isLoading } = storeToRefs(loadStore)
 
@@ -31,7 +31,7 @@ export const useProjectStore = defineStore('project', () => {
   const sort = ref('_id')
   const order = ref('asc')
 
-  const projects = ref({
+  const news = ref({
     data: [],
     pagination: {
       currentPage: null,
@@ -41,9 +41,9 @@ export const useProjectStore = defineStore('project', () => {
     }
   })
 
-  const isGetProjects = ref(false)
+  const isGetNews = ref(false)
 
-  const getProjects = ref( async (page, pageSize, status, category, sort, order) => {
+  const getNews = ref( async (page, pageSize, status, category, sort, order) => {
     page = page? `page=${page}` : ''
     pageSize = pageSize? `&size=${pageSize}` : ''
     status = status? `&status=${status}` : ''
@@ -52,12 +52,12 @@ export const useProjectStore = defineStore('project', () => {
     order = order? `&sortOrder=${order}` : ''
 
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/project?${page}${pageSize}${status}${category}${sort}${order}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/news?${page}${pageSize}${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
-        projects.value = {...response.data}
-        isGetProjects.value = true
+        news.value = {...response.data}
+        isGetNews.value = true
         isLoading.value = false
       }
     } catch(e) {
@@ -69,56 +69,63 @@ export const useProjectStore = defineStore('project', () => {
   const sucessInfo = {
     'add': {
       title: '上架成功',
-      message: '專案已經上架成功，按確定返回專案管理列表。'
+      message: '貼文已經上架成功，按確定返回貼文管理列表。'
     },
     'save': {
       title: '儲存成功',
-      message: '專案草稿已經儲存成功，按確定返回專案管理列表。'
+      message: '貼文草稿已經儲存成功，按確定返回貼文管理列表。'
     },
     'edit': {
       title: '編輯成功',
-      message: '專案已經編輯成功，按確定返回專案管理列表。'
+      message: '貼文已經編輯成功，按確定返回貼文管理列表。'
     },
     'archive': {
-      title: '專案已封存',
-      message: '專案已經封存完成，無法再進行任何編輯，按確定返回專案管理列表。'
+      title: '貼文已封存',
+      message: '貼文已經封存完成，無法再進行任何編輯，按確定返回貼文管理列表。'
     }
   }
+
+  const selectFile = ref(null)
 
   const selectImageFiles = ref([])
   const updateImageFile = ref([])
 
-  const editProject = ref( async (projectInfo, editType) => {
+  const editNews = ref( async (newsInfo, editType) => {
     isLoading.value = true
 
     let type = null
     type = editType == 'create' ? 'add'
     : editType == 'save' ? 'edit'
-    : editType == 'add' ? (projectInfo.status = 'active', 'edit') 
+    : editType == 'add' ? (newsInfo.status = 'active', 'edit') 
     : editType == 'edit' ? 'edit'
-    : editType == 'archive' ? (projectInfo.status = 'archived', 'edit')
+    : editType == 'archive' ? (newsInfo.status = 'archived', 'edit')
     : null
 
     const formData = new FormData()
 
     if (type == 'edit') {
-      formData.append("_id", projectInfo._id)
+      formData.append("_id", newsInfo._id)
     }
 
-    formData.append("title", projectInfo.title)
-    formData.append("category", projectInfo.category)
-    formData.append("status", projectInfo.status)
-    formData.append("artist", projectInfo.artist)
+    formData.append("source", newsInfo.source)
+    formData.append("status", newsInfo.status)
 
-    formData.append("description", JSON.stringify(projectInfo.description))
-    formData.append("detail", JSON.stringify(projectInfo.detail))
-    formData.append("tags", JSON.stringify(projectInfo.tags))
+    formData.append("topic", JSON.stringify(newsInfo.topic))
+    formData.append("description", JSON.stringify(newsInfo.description))
+    formData.append("detail", JSON.stringify(newsInfo.detail))
 
-    formData.append("imageList", JSON.stringify(projectInfo.imageList))
+    formData.append("content", JSON.stringify(newsInfo.content))
+
+    if (news.imagePublicId) {
+      formData.append("imagePublicId", newsInfo.imagePublicId)
+    }
+    if (selectFile.value) {
+      formData.append("mainImage", selectFile.value)
+    }
 
     selectImageFiles.value.forEach( file => {
       if (file.file) {
-        formData.append("projectImages", file.file)
+        formData.append("newsImages", file.file)
       }
     })
     
@@ -129,10 +136,10 @@ export const useProjectStore = defineStore('project', () => {
       }
     })
     if (updateArray.length > 0) {
-      formData.append("updateProjectImages", JSON.stringify(updateArray))
+      formData.append("updateNewsImages", JSON.stringify(updateArray))
     }
     
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/project/${type}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/news/${type}`
     const token = getToken.value()
     try {
       let response = await axios.post(apiURL, formData, {
@@ -142,7 +149,7 @@ export const useProjectStore = defineStore('project', () => {
         }
       })
       if (response) {
-        openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'projectList')
+        openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'newsList')
       }
     } catch(e) {
       errorHandle.value(e)
@@ -150,9 +157,9 @@ export const useProjectStore = defineStore('project', () => {
     }
   })
 
-  const deleteProject = ref( async id => {
+  const deleteNews = ref( async id => {
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/project/${id}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/news/${id}`
     const token = getToken.value()
     try {
       let response = await axios.delete(apiURL, {
@@ -162,7 +169,7 @@ export const useProjectStore = defineStore('project', () => {
       })
       if (response) {
         console.log('done')
-        getProjects.value()
+        getNews.value()
       }
     } catch(e) {
       errorHandle.value(e)
@@ -170,14 +177,14 @@ export const useProjectStore = defineStore('project', () => {
     }
   })
 
-  const goToAddProject = ref( () => {
-    router.push({ name: 'projectAdd'})
+  const goToAddNews = ref( () => {
+    router.push({ name: 'newsAdd'})
   })
 
   return { 
     statusList, page, pageSize, category, status, sort, order, 
-    projects,
-    selectImageFiles, updateImageFile,
-    getProjects, isGetProjects, editProject, deleteProject, goToAddProject
+    news,
+    selectFile, selectImageFiles, updateImageFile,
+    getNews, isGetNews, editNews, deleteNews, goToAddNews
   }
 })

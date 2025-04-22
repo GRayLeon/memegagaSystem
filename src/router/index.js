@@ -68,6 +68,28 @@ const router = createRouter({
           ]
         },
         {
+          path: 'news',
+          name: 'news',
+          component: () => import('../components/NewsView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'newsList',
+              component: () => import('../components/news/NewsList.vue')
+            },
+            {
+              path: 'add',
+              name: 'newsAdd',
+              component: () => import('../components/news/NewsEdit.vue')
+            },
+            {
+              path: ':id',
+              name: 'newsEdit',
+              component: () => import('../components/news/NewsEdit.vue')
+            }
+          ]
+        },
+        {
           path: 'size',
           name: 'size',
           component: () => import('../components/SizeView.vue'),

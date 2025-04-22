@@ -18,6 +18,10 @@
         <span class="material-icons">folder</span>
         <span>專案管理</span>
       </RouterLink>
+      <RouterLink to="/news">
+        <span class="material-icons">article</span>
+        <span>貼文管理</span>
+      </RouterLink>
       <!-- <RouterLink to="/category">
         <span class="material-icons">category</span>
         <span>分類管理</span>

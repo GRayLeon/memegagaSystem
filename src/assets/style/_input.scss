@@ -52,6 +52,7 @@
   background-color: black;
   &--column {
     flex-direction: column;
+    padding: 16px;
   }
   .head {
     width: 75px;
@@ -436,4 +437,65 @@
   justify-content: center;
   padding-top: 16px;
   border-top: #555 1px solid;
+}
+
+.projectImages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding-bottom: 16px;
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-bottom: #555 1px solid;
+  }
+  .selectItemArea {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    width: 100%;
+  }
+  .selectItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    select {
+      border-bottom: #555 1px solid;
+      width: 120px;
+      padding: 0;
+      line-height: 24px;
+    }
+  }
+  .imageList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 16px;
+    &__image {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: calc( 50% - 16px - 24px/2 );
+    }
+  }
+  .deleteImage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    font-weight: 900;
+    border: #444 1px solid;
+    color: white;
+    font-size: 12px;
+    background-color: #333;
+    cursor: pointer;
+  }
 }
