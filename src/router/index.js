@@ -90,6 +90,28 @@ const router = createRouter({
           ]
         },
         {
+          path: 'brand',
+          name: 'brand',
+          component: () => import('../components/BrandView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'brandList',
+              component: () => import('../components/brand/BrandList.vue')
+            },
+            {
+              path: 'add',
+              name: 'brandAdd',
+              component: () => import('../components/brand/BrandEdit.vue')
+            },
+            {
+              path: ':id',
+              name: 'brandEdit',
+              component: () => import('../components/brand/BrandEdit.vue')
+            }
+          ]
+        },
+        {
           path: 'size',
           name: 'size',
           component: () => import('../components/SizeView.vue'),
@@ -202,11 +224,11 @@ const router = createRouter({
               name: 'support',
               component: () => import('../components/spec/EditSupport.vue')
             },
-            {
-              path: 'brand',
-              name: 'brand',
-              component: () => import('../components/spec/EditBrand.vue')
-            }
+            // {
+            //   path: 'brand',
+            //   name: 'brand',
+            //   component: () => import('../components/spec/EditBrand.vue')
+            // }
           ]
         },
         {

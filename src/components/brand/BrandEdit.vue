@@ -1,0 +1,475 @@
+<script setup>
+  import { useBrandStore } from '@/stores/brand'
+  import { useLoadStore } from '@/stores/load'
+	import { storeToRefs } from 'pinia'
+	import { useRoute, useRouter } from 'vue-router'
+  import { ref, computed, watch, onMounted } from 'vue';
+
+  const brandStore = useBrandStore()
+	const { 
+    brands,
+    selectFile, selectImageFiles, updateImageFile,
+    editBrand
+  } = storeToRefs(brandStore)
+
+  const loadStore = useLoadStore()
+	const { isLoading } = storeToRefs(loadStore)
+
+  const route = useRoute()
+  const router = useRouter()
+
+  const brandInfo = ref({
+    name: '',
+    status: 'draft',
+    imageURL: '',
+    imagePublicId: '',
+    description: {
+      en: '',
+      zh: ''
+    },
+    content: [{
+      layout: {
+        direction: 'single-vertical',
+        position: 'image-top'
+      },
+      article: [{
+        text: {
+          en: '',
+          zh: ''
+        },
+        imageURL: '',
+        imagePublicId: ''
+      }]
+    }]
+  })
+
+  const isEdit = computed( () => {
+    return route.params.id !== undefined
+  })
+
+  const isDraft = ref(false)
+  const isArchived = ref(false)
+
+  const typeWording = computed( () => {
+    return isEdit.value? '編輯' : '新增'
+  })
+
+  // mainImages
+  const previewUrl = ref(null)
+  const previewName = ref('請選擇圖片檔案')
+
+  const isChanging = ref(false)
+  const changeImage = () => {
+    isChanging.value = true
+  }
+
+  const onFileChange = event => {
+    const file = event.target.files[0]
+    if (file) {
+      selectFile.value = file
+      previewUrl.value = URL.createObjectURL(file)
+      previewName.value = file.name
+    } else {
+      previewUrl.value = null
+      previewName.value = '請選擇圖片檔案'
+    }
+  }
+
+  // brandImages
+  const previewImageUrl = ref([])
+  const previewImageName = ref([])
+  const isImageChanging = ref([])
+
+  const changeImages = (listIdx, idx) => {
+    const target = isImageChanging.value.find( item =>
+      item.index[0] === listIdx && item.index[1] === idx
+    )
+    if (target) {
+      target.isChange = true
+    }
+  }
+
+  const findTarget = (data, listIdx, idx) => {
+    return data.find( item =>
+      item.index[0] === listIdx && item.index[1] === idx
+    ) || data[0]
+  }
+  const onImageFileChange = (event, listIdx, idx) => {
+    const file = event.target.files[0]
+    if (file) {
+      const newFile = new File([file], `${Date.now() + listIdx + idx}_${file.name}`, { type: file.type })
+
+      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
+      if (fileTarget) {
+        fileTarget.file = newFile
+      }
+
+      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
+      if (urlTarget) {
+        urlTarget.url = URL.createObjectURL(file)
+      }
+
+      const nameTarget = findTarget(previewImageName.value, listIdx, idx)
+      if (nameTarget) {
+        nameTarget.name = file.name
+      }
+
+      const updateTarget = findTarget(updateImageFile.value, listIdx, idx)
+      if (updateTarget) {
+        updateTarget.name = newFile.name.split(".")[0]
+      }
+
+    } else {
+      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
+      if (urlTarget) {
+        urlTarget.url = null
+      }
+
+      const nameTarget = findTarget(previewImageName.value, listIdx, idx)
+      if (nameTarget) {
+        nameTarget.name = '請選擇圖片檔案'
+      }
+
+      const updateTarget = findTarget(updateImageFile.value, listIdx, idx)
+      if (updateTarget) {
+        updateImageFile.value.splice(updateImageFile.value.indexOf(updateTarget), 1)
+      }
+    }
+  }
+  
+  const addImage = () => {
+    brandInfo.value.content.push({
+      layout: {
+        direction: 'single-vertical',
+        position: 'image-top'
+      },
+      article: [{
+        text: {
+          en: '',
+          zh: ''
+        },
+        imageURL: '',
+        imagePublicId: ''
+      }]
+    })
+    isImageChanging.value.push({
+      index: [brandInfo.value.content.length - 1, 0],
+      isChange: true
+    })
+    previewImageUrl.value.push({
+      index: [brandInfo.value.content.length - 1, 0],
+      url: ''
+    })
+    previewImageName.value.push({
+      index: [brandInfo.value.content.length - 1, 0],
+      name: '請選擇圖片檔案'
+    })
+  }
+
+  const removeParent = (data, idx) => {
+    data.forEach( (file, fidx) => {
+      if (file.index[0] === idx) {
+        data.splice(fidx, 1)
+      }
+    })
+  }
+  const removeImage = idx => {
+    brandInfo.value.content.splice(idx, 1)
+    removeParent(selectImageFiles.value, idx)
+    removeParent(previewImageUrl.value, idx)
+    removeParent(previewImageName.value, idx)
+    removeParent(isImageChanging.value, idx)
+  }
+
+  const textSwitch = idx => {
+    if (brandInfo.value.content[idx].text !== null) {
+      brandInfo.value.content[idx].text = null
+    } else {
+      brandInfo.value.content[idx].text = ''
+    }
+  }
+
+  const showText = idx => {
+    return brandInfo.value.content[idx].text !== null
+  }
+
+  const backcardList = () => {
+    router.push({ name: 'brandList'})
+  }
+
+  const initBrandInfo = () => {
+    if (isEdit.value) {
+      brands.value.data.forEach( brand => {
+        if (brand._id == route.params.id) {
+          brandInfo.value = { ...brand }
+        }
+      })
+      brandInfo.value.content.forEach( (item, listIdx) => {
+        item.article.forEach( (image, idx) => {
+          selectImageFiles.value.push({
+            index: [listIdx, idx],
+            file: null
+          })
+          updateImageFile.value.push({
+            index: [listIdx, idx],
+            name: ''
+          })
+          previewImageUrl.value.push({
+            index: [listIdx, idx],
+            url: ''
+          })
+          previewImageName.value.push({
+            index: [listIdx, idx],
+            name: '請選擇圖片檔案'
+          })
+          isImageChanging.value.push({
+            index: [listIdx, idx],
+            isChange: false
+          })
+        })
+      })
+    } else {
+      selectImageFiles.value.push({
+        index: [0, 0],
+        file: null
+      })
+      updateImageFile.value.push({
+        index: [0, 0],
+        name: ''
+      })
+      previewImageUrl.value.push({
+        index: [0, 0],
+        url: ''
+      })
+      previewImageName.value.push({
+        index: [0, 0],
+        name: '請選擇圖片檔案'
+      })
+      isImageChanging.value.push({
+        index: [0, 0],
+        isChange: false
+      })
+    }
+    if (brandInfo.value.content.length == 0) {
+      previewImageUrl.value.push({
+        index: [0, 0],
+        url: null
+      })
+      previewImageName.value.push({
+        index: [0, 0],
+        name: '請選擇圖片檔案'
+      })
+      isImageChanging.value.push({
+        index: [0, 0],
+        isChange: false
+      })
+    }
+  }
+
+  const onClassChange = (listIdx) => {
+    const type = brandInfo.value.content[listIdx].layout.direction.split('_')[0]
+    if (type == 'single') {
+      brandInfo.value.content[listIdx].article.splice(1, 1)
+
+      const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
+      isImageChanging.value.splice(indexOf(changeTarget), 1)
+
+      const urlTarget = findTarget(previewImageUrl.value, listIdx, 1)
+      previewImageUrl.value.splice(indexOf(urlTarget), 1)
+
+      const nameTarget = findTarget(previewImageName.value, listIdx, 1)
+      previewImageName.value.splice(indexOf(nameTarget), 1)
+
+    } else {
+      brandInfo.value.content[listIdx].article.push({
+        text: {
+          en: '',
+          zh: ''
+        },
+        imageURL: '',
+        imagePublicId: ''
+      })
+      isImageChanging.value.push({
+        index: [listIdx, 1],
+        isChange: false
+      })
+      previewImageUrl.value.push({
+        index: [listIdx, 1],
+        url: ''
+      })
+      previewImageName.value.push({
+        index: [listIdx, 1],
+        name: '請選擇圖片檔案'
+      })
+    }
+  }
+
+  onMounted( () => {
+    isLoading.value = true
+    initBrandInfo()
+    if (brandInfo.value.status == 'draft') {
+      isDraft.value = true
+    } else if (brandInfo.value.status == 'archived') {
+      isArchived.value = true
+    }
+  })
+
+</script>
+
+<template>
+  <div class="title">
+    <div class="buttonTitle">
+      <div class="backButton" @click="backcardList()">
+        <span class="material-icons">chevron_left</span>
+      </div>
+      <h1>{{ typeWording }}貼文</h1>
+    </div>
+  </div>
+  <div class="editArea">
+    <img
+      :src="brandInfo.imageURL"
+      v-if="brandInfo.imageURL && !isChanging">
+    <img
+      :src="previewUrl"
+      v-else-if="previewUrl && isChanging">
+    <div class="noImage" v-else><span>沒有圖片</span></div>
+    <button
+      v-if="!isChanging && !isArchived"
+      @click="changeImage">
+      更改圖片
+    </button>
+    <div v-else-if="!isArchived" class="imageSelect">
+      <input
+        type="file"
+        accept=".jpg, .png"
+        name="selectImage"
+        id="selectImage"
+        @change="onFileChange">
+      <span>{{ previewName }}</span>
+      <label for="selectImage">選擇檔案</label>
+    </div>
+    <div class="inputItem inputItem--column">
+      <ul class="projectImages">
+        <li v-for="(item, listIdx) in brandInfo.content">
+          <div class="selectItemArea">
+            <div class="selectItem">
+              <div class="head">排列形式</div>
+              <select
+                v-model="item.layout.direction"
+                @change="onClassChange(listIdx)">
+                <option value="" selected disabled>請選擇排列形式</option>
+                <option value="single-vertical">單張垂直</option>
+                <option value="double-vertical">兩張垂直</option>
+                <option value="single-horizon">單張平行</option>
+                <option value="double-horizon">兩張平行</option>
+              </select>
+            </div>
+            <div class="selectItem">
+              <div class="head">圖片位置</div>
+              <select
+                v-model="item.layout.position">
+                <option value="" selected disabled>請選擇圖片位置</option>
+                <option value="image-left">置左</option>
+                <option value="image-right">置右</option>
+                <option value="image-top">置頂</option>
+                <option value="image-bottom">置底</option>
+              </select>
+            </div>
+            <!-- <div class="selectItem">
+              <div
+                class="switchButton"
+                :class="{ active: showText(listIdx) }"
+                @click="textSwitch(listIdx)">顯示文字</div>
+            </div> -->
+          </div>
+          <div class="imageList">
+            <div class="imageList__image" v-for="(article, idx) in item.article">
+              <img
+                :src="article.imageURL"
+                v-if="article.imageURL && !findTarget(isImageChanging, listIdx, idx).isChange">
+              <img
+                :src="findTarget(previewImageUrl, listIdx, idx) && findTarget(previewImageUrl, listIdx, idx).url"
+                v-else-if="findTarget(previewImageUrl, listIdx, idx) && findTarget(previewImageUrl, listIdx, idx).url && findTarget(isImageChanging, listIdx, idx).isChange">
+              <div class="noImage" v-else><span>沒有圖片</span></div>
+              <button
+                v-if="findTarget(isImageChanging, listIdx, idx) && !findTarget(isImageChanging, listIdx, idx).isChange && !isArchived"
+                @click="changeImages(listIdx, idx)">
+                更改圖片
+              </button>
+              <div v-else-if="!isArchived" class="imageSelect">
+                <input
+                  type="file"
+                  accept=".jpg, .png"
+                  name="selectImage"
+                  :id="`selectImage-${listIdx}-${idx}`"
+                  @change="onImageFileChange($event, listIdx, idx)">
+                <span v-if="findTarget(previewImageName, listIdx, idx)">{{ findTarget(previewImageName, listIdx, idx).name }}</span>
+                <label :for="`selectImage-${listIdx}-${idx}`">選擇檔案</label>
+              </div>
+              <textarea
+                v-model="article.text.en"
+                placeholder="請輸入英文內容"
+                v-if="showText(listIdx)">{{ showText(listIdx) }}</textarea>
+                <textarea
+                  v-model="article.text.zh"
+                  placeholder="請輸入中文內容"
+                  v-if="showText(listIdx)"></textarea>
+            </div>
+            <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
+          </div>
+        </li>
+      </ul>
+      <button @click="addImage()">新增圖片欄</button>
+    </div>
+    <div class="inputItem" v-if="isEdit">
+      <div class="head">商品狀態</div>
+      <select
+        v-if="!isDraft"
+        v-model="brandInfo.status"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇專案狀態</option>
+        <option value="active">上架</option>
+        <option value="inactive">下架</option>
+      </select>
+      <select v-else disabled>
+        <option>草稿</option>
+      </select>
+    </div>
+    <div class="inputItem">
+      <div class="head">名稱</div>
+      <input
+        v-model="brandInfo.name"
+        :disabled="isArchived"
+        placeholder="請如入名稱"
+        type="text"/>
+    </div>
+    <div class="inputItem">
+      <div class="head">敘述(英)</div>
+      <textarea
+        v-model="brandInfo.description.en"
+        :disabled="isArchived"
+        placeholder="請輸入英文敘述"
+        type="text"></textarea>
+    </div>
+    <div class="inputItem">
+      <div class="head">敘述(中)</div>
+      <textarea
+        v-model="brandInfo.description.zh"
+        :disabled="isArchived"
+        placeholder="請輸入中文敘述"
+        type="text"></textarea>
+    </div>
+    <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
+      <button @click="editBrand(brandInfo, 'edit')">儲存編輯</button>
+      <button v-if="!isDraft" @click="editBrand(brandInfo, 'archive')">封存商品</button>
+    </div>
+    <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
+      <button v-if="!isEdit" @click="editBrand(brandInfo, 'create')">創建草稿</button>
+      <button v-else @click="editBrand(brandInfo, 'save')">儲存草稿</button>
+      <button @click="editBrand(brandInfo, 'add')">上架品牌</button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+</style>

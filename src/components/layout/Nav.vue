@@ -18,6 +18,10 @@
         <span class="material-icons">crop_free</span>
         <span>規格管理</span>
       </RouterLink>
+      <RouterLink to="/brand">
+        <span class="material-icons">category</span>
+        <span>品牌管理</span>
+      </RouterLink>
       <RouterLink to="/project">
         <span class="material-icons">folder</span>
         <span>專案管理</span>
