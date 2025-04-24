@@ -30,6 +30,10 @@
         <span class="material-icons">article</span>
         <span>貼文管理</span>
       </RouterLink>
+      <RouterLink to="/inquiry">
+        <span class="material-icons">edit_note</span>
+        <span>諮詢管理</span>
+      </RouterLink>
       <RouterLink to="/pages">
         <span class="material-icons">description</span>
         <span>頁面管理</span>

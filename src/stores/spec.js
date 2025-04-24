@@ -66,6 +66,8 @@ export const useSpecStore = defineStore('spec', () => {
       }]
     }
   })
+  
+  const isGetSpecs = ref(false)
 
   const getSpecDatas = ref( async () => {
     isLoading.value = true
@@ -74,6 +76,7 @@ export const useSpecStore = defineStore('spec', () => {
       let response = await axios.get(apiURL)
       if (response) {
         specDatas.value = {...response.data}
+        isGetSpecs.value = true
         isLoading.value = false
       }
     } catch(e) {
@@ -120,5 +123,5 @@ export const useSpecStore = defineStore('spec', () => {
   const selectBrandFiles = ref([])
   const updateBrandFile = ref([])
 
-  return { specDatas, getSpecDatas, editSpec, selectBrandFiles, updateBrandFile }
+  return { specDatas, isGetSpecs, getSpecDatas, editSpec, selectBrandFiles, updateBrandFile }
 })

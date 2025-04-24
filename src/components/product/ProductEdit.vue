@@ -1,7 +1,5 @@
 <script setup>
   import { useProductStore } from '@/stores/product'
-  import { useCategoryStore } from '@/stores/category'
-  import { useSizeStore } from '@/stores/size.js'
   import { useSpecStore } from '@/stores/spec'
   import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
@@ -17,14 +15,8 @@
     editProduct
   } = storeToRefs(productStore)
 
-  const categoryStore = useCategoryStore()
-	const { categorys, getCategorys } = storeToRefs(categoryStore)
-
-  const sizeStore = useSizeStore()
-	const { sizeDatas, getSizeDatas } = storeToRefs(sizeStore)
-
   const specStore = useSpecStore()
-	const { getSpecDatas, specDatas } = storeToRefs(specStore)
+	const { getSpecDatas, specDatas, isGetSpecs } = storeToRefs(specStore)
 
   const loadStore = useLoadStore()
 	const { isLoading } = storeToRefs(loadStore)
@@ -45,13 +37,12 @@
     shapes: [],
     colors: [],
     tags: [],
-    origin: '',
-    appearance: '',
-    functionality: '',
-    support: '',
-    brand: '',
+    origin: {},
+    appearance: {},
+    functionality: {},
+    support: {},
+    brand: {},
     status: 'draft',
-    parentCategory: '',
     imageURL: '',
     basePrice: 0
   })
@@ -77,6 +68,42 @@
 
   const typeWording = computed( () => {
     return isEdit.value? '編輯' : '新增'
+  })
+
+  const isReady = computed( () => {
+    let ready = true
+    if( !productInfo.value.name.en ) { ready = false}
+    if( !productInfo.value.name.zh ) { ready = false}
+    if( !productInfo.value.description.en ) { ready = false}
+    if( !productInfo.value.description.zh ) { ready = false}
+    if( !productInfo.value.subImages ) { ready = false}
+    if( !productInfo.value.shapes ) { ready = false}
+    if( !productInfo.value.colors ) { ready = false}
+    if( !productInfo.value.tags ) { ready = false}
+    if( !productInfo.value.origin ) { ready = false}
+    if( !productInfo.value.appearance ) { ready = false}
+    if( !productInfo.value.functionality ) { ready = false}
+    if( !productInfo.value.support ) { ready = false}
+    if( !productInfo.value.brand ) { ready = false}
+    if( !productInfo.value.status ) { ready = false}
+    if( !productInfo.value.imageURL ) { ready = false}
+    
+    if( productInfo.value.name.en == '' ) { ready = false}
+    if( productInfo.value.name.zh == '' ) { ready = false}
+    if( productInfo.value.description.en == '' ) { ready = false}
+    if( productInfo.value.description.zh == '' ) { ready = false}
+    if( productInfo.value.subImages == [] ) { ready = false}
+    if( productInfo.value.shapes == [] ) { ready = false}
+    if( productInfo.value.colors == [] ) { ready = false}
+    if( productInfo.value.tags == [] ) { ready = false}
+    if( productInfo.value.origin == {} ) { ready = false}
+    if( productInfo.value.appearance == {} ) { ready = false}
+    if( productInfo.value.functionality == {} ) { ready = false}
+    if( productInfo.value.support == {} ) { ready = false}
+    if( productInfo.value.brand == {} ) { ready = false}
+    if( productInfo.value.status == '' ) { ready = false}
+    if( productInfo.value.imageURL == '' ) { ready = false}
+    return ready
   })
 
   // mainImages
@@ -315,8 +342,6 @@
 
   onMounted( async () => {
     isLoading.value = true
-    await getCategorys.value()
-    await getSizeDatas.value()
     await getSpecDatas.value()
     initProductInfo()
     if (!isEdit.value) {
@@ -413,20 +438,71 @@
         <option>草稿</option>
       </select>
     </div>
-    <!-- <div class="inputItem">
-      <div class="head">分類</div>
+    <div class="inputItem" v-if="isGetSpecs">
+      <div class="head">產地</div>
       <select
-        v-model="productInfo.parentCategory"
+        v-model="productInfo.origin"
         :disabled="isArchived">
-        <option value="" disabled>請選擇分類</option>
+        <option value="" disabled>請選擇產地</option>
         <option
-          :value="category._id"
-          :disabled="!category.active"
-          v-for="category in categorys">
-          {{ category.name['zh'] }}&emsp;/&emsp;{{ category.name['en'] }}
+          :value="origin"
+          v-for="origin in specDatas.origin.list">
+          {{ origin['zh'] }}&emsp;/&emsp;{{ origin['en'] }}
         </option>
       </select>
-    </div> -->
+    </div>
+    <div class="inputItem" v-if="isGetSpecs">
+      <div class="head">外觀</div>
+      <select
+        v-model="productInfo.appearance"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇外觀</option>
+        <option
+          :value="appearance"
+          v-for="appearance in specDatas.appearance.list">
+          {{ appearance['zh'] }}&emsp;/&emsp;{{ appearance['en'] }}
+        </option>
+      </select>
+    </div>
+    <div class="inputItem" v-if="isGetSpecs">
+      <div class="head">功能</div>
+      <select
+        v-model="productInfo.functionality"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇功能</option>
+        <option
+          :value="functionality"
+          v-for="functionality in specDatas.functionality.list">
+          {{ functionality['zh'] }}&emsp;/&emsp;{{ functionality['en'] }}
+        </option>
+      </select>
+    </div>
+    <div class="inputItem" v-if="isGetSpecs">
+      <div class="head">配套</div>
+      <select
+        v-model="productInfo.support"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇配套</option>
+        <option
+          :value="support"
+          v-for="support in specDatas.support.list">
+          {{ support['zh'] }}&emsp;/&emsp;{{ support['en'] }}
+        </option>
+      </select>
+    </div>
+    <div class="inputItem" v-if="isGetSpecs">
+      <div class="head">品牌</div>
+      <select
+        v-model="productInfo.brand"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇品牌</option>
+        <option
+          :value="brand.name"
+          v-for="brand in specDatas.brands.list">
+          {{ brand.name }}
+        </option>
+      </select>
+    </div>
     <div class="inputItem">
       <div class="head">名稱(英)</div>
       <input
@@ -686,7 +762,9 @@
       </div>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editProduct(productInfo, 'edit', selecteFile)">儲存編輯</button>
+      <button
+        @click="editProduct(productInfo, 'edit', selecteFile)"
+        :disabled="!isReady">儲存編輯</button>
       <button v-if="!isDraft" @click="editProduct(productInfo, 'archive', selecteFile)">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">

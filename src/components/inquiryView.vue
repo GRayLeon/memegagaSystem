@@ -4,25 +4,25 @@
   import { RouterView } from 'vue-router';
   import { onMounted, onUpdated } from 'vue'
 
-  const specStore = useSpecStore()
-	const { getInquiryDatas } = storeToRefs(specStore)
+  const inquiryStore = useInquiryStore()
+  const { page, pageSize, category, status, sort, order, getInquiryDatas } = storeToRefs(inquiryStore)
 
   onMounted( () => {
-    getInquiryDatas.value()
+    page.value = 1
+    category.value = ''
+    status.value = ''
+    sort.value = '_id'
+    order.value = 'asc'
+    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
   })
 
   onUpdated( () => {
-    getInquiryDatas.value()
+    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
   })
 </script>
 
 <template>
-  <div class="title">
-    <h1><span class="material-icons">edit_note</span>諮詢管理</h1>
-  </div>
-  <div class="borderBox">
-    <RouterView></RouterView>
-  </div>
+  <RouterView></RouterView>
 </template>
 
 <style scoped>

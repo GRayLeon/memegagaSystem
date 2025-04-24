@@ -39,7 +39,7 @@
       <RouterLink to="/spec/support">配套管理</RouterLink>
     </li>
     <li>
-      <RouterLink to="/spec/brand">品牌管理</RouterLink>
+      <RouterLink to="/spec/specBrand">品牌管理</RouterLink>
     </li>
   </ul>
   <div class="borderBox">

@@ -224,11 +224,11 @@ const router = createRouter({
               name: 'support',
               component: () => import('../components/spec/EditSupport.vue')
             },
-            // {
-            //   path: 'brand',
-            //   name: 'brand',
-            //   component: () => import('../components/spec/EditBrand.vue')
-            // }
+            {
+              path: 'specBrand',
+              name: 'specBrand',
+              component: () => import('../components/spec/EditBrand.vue')
+            }
           ]
         },
         {
@@ -247,7 +247,24 @@ const router = createRouter({
               component: () => import('../components/pages/EditPartner.vue')
             }
           ]
-        }
+        },
+        {
+          path: 'inquiry',
+          name: 'inquiry',
+          component: () => import('../components/InquiryView.vue'),
+          children: [
+            {
+              path: '',
+              name: 'inquiryList',
+              component: () => import('../components/inquiry/InquiryList.vue')
+            },
+            {
+              path: ':id',
+              name: 'inquiryEdit',
+              component: () => import('../components/inquiry/InquiryEdit.vue')
+            }
+          ]
+        },
       ]
     },
     {

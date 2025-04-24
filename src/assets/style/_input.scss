@@ -80,6 +80,12 @@
   option {
     text-align: left;
   }
+  span {
+    display: block;
+    font-size: 16px;
+    line-height: 36px;
+    color: #aaa;
+  }
   .sizeList {
     display: flex;
     flex-direction: column;
@@ -471,7 +477,12 @@
         position: absolute;
         top: 8px;
         right: 8px;
-        padding: 4px 8px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
         border-radius: 24px;
         font-weight: 900;
         border: #444 1px solid;
@@ -479,6 +490,9 @@
         font-size: 12px;
         background-color: #333;
         cursor: pointer;
+        span {
+          line-height: 1;
+        }
       }
     }
 }
