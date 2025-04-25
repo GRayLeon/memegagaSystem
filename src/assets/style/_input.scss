@@ -466,7 +466,9 @@
     flex-wrap: wrap;
     gap: 16px;
     width: 100%;
-    padding: 6px 0;
+    padding: 6px 0 16px;
+    margin-bottom: 16px;
+    border-bottom: #555 1px solid;
     li {
       flex: 0 0 calc(100%/3 - 16px*2/3);
       position: relative;
