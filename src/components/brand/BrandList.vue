@@ -5,7 +5,7 @@
   import { watch } from 'vue'
 
   const brandStore = useBrandStore()
-	const { statusList, page, pageSize, category, status, sort, order, brands, getBrands, goToAddBrands } = storeToRefs(brandStore)
+	const { statusList, page, pageSize, category, status, sort, order, brands, getBrands, goToAddBrand } = storeToRefs(brandStore)
 
   const router = useRouter()
 
@@ -37,7 +37,7 @@
 <template>
   <div class="title">
     <h1><span class="material-icons">category</span>品牌管理</h1>
-    <button @click="goToAddNews">新增品牌</button>
+    <button @click="goToAddBrand">新增品牌</button>
   </div>
   <div class="filterArea">
     <div class="inputItem">

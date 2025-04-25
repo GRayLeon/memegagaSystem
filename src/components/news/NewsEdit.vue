@@ -83,6 +83,28 @@
     }
   }
 
+  const isReady = computed( () => {
+    let ready = true
+    if( !newsInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    if( !newsInfo.value.topic.en ) { ready = false}
+    if( !newsInfo.value.topic.zh ) { ready = false}
+    if( !newsInfo.value.source ) { ready = false}
+    if( !newsInfo.value.description.en ) { ready = false}
+    if( !newsInfo.value.description.zh ) { ready = false}
+    if( !newsInfo.value.detail.en ) { ready = false}
+    if( !newsInfo.value.detail.zh ) { ready = false}
+    
+    if( newsInfo.value.topic.en == '' ) { ready = false}
+    if( newsInfo.value.topic.zh == '' ) { ready = false}
+    if( newsInfo.value.source == '' ) { ready = false}
+    if( newsInfo.value.description.en == '' ) { ready = false}
+    if( newsInfo.value.description.zh == '' ) { ready = false}
+    if( newsInfo.value.detail.en == '' ) { ready = false}
+    if( newsInfo.value.detail.zh == '' ) { ready = false}
+
+    return ready
+  })
+
   // newsImages
   const previewImageUrl = ref([])
   const previewImageName = ref([])
@@ -476,13 +498,26 @@
         type="text"></textarea>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editNews(newsInfo, 'edit')">儲存編輯</button>
-      <button v-if="!isDraft" @click="editNews(newsInfo, 'archive')">封存商品</button>
+      <button  
+        :disabled="!isReady"
+        @click="editNews(newsInfo, 'edit')">儲存編輯</button>
+      <button  
+        :disabled="!isReady"
+        v-if="!isDraft"
+        @click="editNews(newsInfo, 'archive')">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editNews(newsInfo, 'create')">創建草稿</button>
-      <button v-else @click="editNews(newsInfo, 'save')">儲存草稿</button>
-      <button @click="editNews(newsInfo, 'add')">上架貼文</button>
+      <button  
+        :disabled="!isReady"
+        v-if="!isEdit"
+        @click="editNews(newsInfo, 'create')">創建草稿</button>
+      <button  
+        :disabled="!isReady"
+        v-else
+        @click="editNews(newsInfo, 'save')">儲存草稿</button>
+      <button  
+        :disabled="!isReady"
+        @click="editNews(newsInfo, 'add')">上架貼文</button>
     </div>
   </div>
 </template>

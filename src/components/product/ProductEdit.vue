@@ -762,15 +762,26 @@
       </div>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button
-        @click="editProduct(productInfo, 'edit', selecteFile)"
-        :disabled="!isReady">儲存編輯</button>
-      <button v-if="!isDraft" @click="editProduct(productInfo, 'archive', selecteFile)">封存商品</button>
+      <button 
+        :disabled="!isReady"
+        @click="editProduct(productInfo, 'edit', selecteFile)">儲存編輯</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isDraft"
+        @click="editProduct(productInfo, 'archive', selecteFile)">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editProduct(productInfo, 'create', selecteFile)">創建草稿</button>
-      <button v-else @click="editProduct(productInfo, 'save', selecteFile)">儲存草稿</button>
-      <button @click="editProduct(productInfo, 'add', selecteFile)">上架商品</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isEdit"
+        @click="editProduct(productInfo, 'create', selecteFile)">創建草稿</button>
+      <button 
+        :disabled="!isReady"
+        v-else
+        @click="editProduct(productInfo, 'save', selecteFile)">儲存草稿</button>
+      <button 
+        :disabled="!isReady"
+        @click="editProduct(productInfo, 'add', selecteFile)">上架商品</button>
     </div>
   </div>
 </template>

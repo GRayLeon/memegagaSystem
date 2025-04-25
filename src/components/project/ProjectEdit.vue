@@ -52,6 +52,30 @@
     return isEdit.value? '編輯' : '新增'
   })
 
+  const isReady = computed( () => {
+    let ready = true
+    if( !projectInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    if( !projectInfo.value.title ) { ready = false}
+    if( !projectInfo.value.category ) { ready = false}
+    if( !projectInfo.value.artist ) { ready = false}
+    if( !projectInfo.value.description.en ) { ready = false}
+    if( !projectInfo.value.description.zh ) { ready = false}
+    if( !projectInfo.value.detail.en ) { ready = false}
+    if( !projectInfo.value.detail.zh ) { ready = false}
+    if( !projectInfo.value.tags ) { ready = false}
+    
+    if( projectInfo.value.title == '' ) { ready = false}
+    if( projectInfo.value.category == '' ) { ready = false}
+    if( projectInfo.value.artist == '' ) { ready = false}
+    if( projectInfo.value.description.en == '' ) { ready = false}
+    if( projectInfo.value.description.zh == '' ) { ready = false}
+    if( projectInfo.value.detail.en == '' ) { ready = false}
+    if( projectInfo.value.detail.zh == '' ) { ready = false}
+    if( projectInfo.value.tags == [] ) { ready = false}
+
+    return ready
+  })
+
   // projectImages
   const previewImageUrl = ref([])
   const previewImageName = ref([])
@@ -439,13 +463,26 @@
       </div>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editProject(projectInfo, 'edit')">儲存編輯</button>
-      <button v-if="!isDraft" @click="editProject(projectInfo, 'archive')">封存商品</button>
+      <button 
+        :disabled="!isReady"
+        @click="editProject(projectInfo, 'edit')">儲存編輯</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isDraft"
+        @click="editProject(projectInfo, 'archive')">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editProject(projectInfo, 'create')">創建草稿</button>
-      <button v-else @click="editProject(projectInfo, 'save')">儲存草稿</button>
-      <button @click="editProject(projectInfo, 'add')">上架專案</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isEdit"
+        @click="editProject(projectInfo, 'create')">創建草稿</button>
+      <button 
+        :disabled="!isReady"
+        v-else
+        @click="editProject(projectInfo, 'save')">儲存草稿</button>
+      <button 
+        :disabled="!isReady"
+        @click="editProject(projectInfo, 'add')">上架專案</button>
     </div>
   </div>
 </template>

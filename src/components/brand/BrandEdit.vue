@@ -54,6 +54,20 @@
     return isEdit.value? '編輯' : '新增'
   })
 
+  const isReady = computed( () => {
+    let ready = true
+    if( !brandInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    if( !brandInfo.value.name ) { ready = false}
+    if( !brandInfo.value.description.en ) { ready = false}
+    if( !brandInfo.value.description.zh ) { ready = false}
+    
+    if( brandInfo.value.name == '' ) { ready = false}
+    if( brandInfo.value.description.en == '' ) { ready = false}
+    if( brandInfo.value.description.zh == '' ) { ready = false}
+
+    return ready
+  })
+
   // mainImages
   const previewUrl = ref(null)
   const previewName = ref('請選擇圖片檔案')
@@ -460,13 +474,26 @@
         type="text"></textarea>
     </div>
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
-      <button @click="editBrand(brandInfo, 'edit')">儲存編輯</button>
-      <button v-if="!isDraft" @click="editBrand(brandInfo, 'archive')">封存商品</button>
+      <button 
+        :disabled="!isReady"
+        @click="editBrand(brandInfo, 'edit')">儲存編輯</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isDraft"
+        @click="editBrand(brandInfo, 'archive')">封存商品</button>
     </div>
     <div class="buttonArea" v-else-if="(!isEdit || isDraft) && !isArchived">
-      <button v-if="!isEdit" @click="editBrand(brandInfo, 'create')">創建草稿</button>
-      <button v-else @click="editBrand(brandInfo, 'save')">儲存草稿</button>
-      <button @click="editBrand(brandInfo, 'add')">上架品牌</button>
+      <button 
+        :disabled="!isReady"
+        v-if="!isEdit"
+        @click="editBrand(brandInfo, 'create')">創建草稿</button>
+      <button 
+        :disabled="!isReady"
+        v-else
+        @click="editBrand(brandInfo, 'save')">儲存草稿</button>
+      <button 
+        :disabled="!isReady"
+        @click="editBrand(brandInfo, 'add')">上架品牌</button>
     </div>
   </div>
 </template>
