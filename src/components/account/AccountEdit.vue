@@ -59,18 +59,18 @@
       </div>
       <h1>{{ editType == 'edit'? '編輯帳號' : '修改密碼' }}</h1>
     </div>
-    <div class="infoArea" v-if="editType == 'change-password'">
-      <div class="info">
+  </div>
+  <div class="editArea">
+    <div class="editArea" v-if="editType == 'change-password'">
+      <div class="inputItem">
         <div class="head">帳號</div>
         <span>{{ account.account }}</span>
       </div>
-      <div class="info">
+      <div class="inputItem">
         <div class="head">狀態</div>
         <span>{{ account.status == 0? '停用' : '啟用'  }}</span>
       </div>
     </div>
-  </div>
-  <div class="editArea">
     <div class="editArea" v-if="editType == 'edit'">
       <div class="inputItem">
         <div class="head">帳號</div>
