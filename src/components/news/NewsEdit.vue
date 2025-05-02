@@ -24,6 +24,7 @@
       zh: ''
     },
     status: 'draft',
+    category: '',
     source: '',
     imageURL: '',
     imagePublicId: '',
@@ -41,6 +42,10 @@
         position: 'image-top'
       },
       article: [{
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -174,6 +179,10 @@
         position: 'image-top'
       },
       article: [{
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -285,8 +294,8 @@
   }
 
   const onClassChange = (listIdx) => {
-    const type = newsInfo.value.content[listIdx].layout.direction.split('_')[0]
-    if (type == 'single') {
+    const type = newsInfo.value.content[listIdx].layout.direction.split('-')[0]
+    if (type == 'single' && newsInfo.value.content[listIdx].article.length == 2) {
       newsInfo.value.content[listIdx].article.splice(1, 1)
 
       const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
@@ -298,8 +307,12 @@
       const nameTarget = findTarget(previewImageName.value, listIdx, 1)
       previewImageName.value.splice(indexOf(nameTarget), 1)
 
-    } else {
+    } else if (type == 'double'  && newsInfo.value.content[listIdx].article.length == 1) {
       newsInfo.value.content[listIdx].article.push({
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -387,10 +400,18 @@
               <select
                 v-model="item.layout.position">
                 <option value="" selected disabled>請選擇圖片位置</option>
-                <option value="image-left">置左</option>
-                <option value="image-right">置右</option>
-                <option value="image-top">置頂</option>
-                <option value="image-bottom">置底</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'horizon'"
+                  value="image-left">置左</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'horizon'"
+                  value="image-right">置右</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'vertical'"
+                  value="image-top">置頂</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'vertical'"
+                  value="image-bottom">置底</option>
               </select>
             </div>
           </div>
@@ -418,8 +439,20 @@
                 <span v-if="findTarget(previewImageName, listIdx, idx)">{{ findTarget(previewImageName, listIdx, idx).name }}</span>
                 <label :for="`selectImage-${listIdx}-${idx}`">選擇檔案</label>
               </div>
-              <textarea v-model="article.text.en" placeholder="請輸入英文內容"></textarea>
-              <textarea v-model="article.text.zh" placeholder="請輸入中文內容"></textarea>
+              <input
+                v-model="article.title.en"
+                placeholder="請輸入英文標題"
+                type="text">
+              <textarea
+                v-model="article.text.en"
+                placeholder="請輸入英文內容"></textarea>
+              <input
+                v-model="article.title.zh"
+                placeholder="請輸入中文標題"
+                type="text">
+              <textarea
+                v-model="article.text.zh"
+                placeholder="請輸入中文內容"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>
@@ -428,17 +461,27 @@
       <button @click="addImage()">新增圖片欄</button>
     </div>
     <div class="inputItem" v-if="isEdit">
-      <div class="head">商品狀態</div>
+      <div class="head">貼文狀態</div>
       <select
         v-if="!isDraft"
         v-model="newsInfo.status"
         :disabled="isArchived">
-        <option value="" disabled>請選擇專案狀態</option>
+        <option value="" disabled>請選擇貼文狀態</option>
         <option value="active">上架</option>
         <option value="inactive">下架</option>
       </select>
       <select v-else disabled>
         <option>草稿</option>
+      </select>
+    </div>
+    <div class="inputItem">
+      <div class="head">分類</div>
+      <select
+        v-model="newsInfo.category"
+        :disabled="isArchived">
+        <option value="" disabled>請選擇貼文分類</option>
+        <option value="Press_Coverage">Press Coverage</option>
+        <option value="Joural_Articles">Joural Articles</option>
       </select>
     </div>
     <div class="inputItem">

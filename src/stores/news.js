@@ -109,6 +109,7 @@ export const useNewsStore = defineStore('news', () => {
 
     formData.append("source", newsInfo.source)
     formData.append("status", newsInfo.status)
+    formData.append("category", newsInfo.category)
 
     formData.append("topic", JSON.stringify(newsInfo.topic))
     formData.append("description", JSON.stringify(newsInfo.description))

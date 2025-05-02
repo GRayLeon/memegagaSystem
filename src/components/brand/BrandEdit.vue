@@ -33,6 +33,10 @@
         position: 'image-top'
       },
       article: [{
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -158,6 +162,10 @@
         position: 'image-top'
       },
       article: [{
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -282,7 +290,7 @@
 
   const onClassChange = (listIdx) => {
     const type = brandInfo.value.content[listIdx].layout.direction.split('_')[0]
-    if (type == 'single') {
+    if (type == 'single' && brandInfo.value.content[listIdx].article.length == 2) {
       brandInfo.value.content[listIdx].article.splice(1, 1)
 
       const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
@@ -294,8 +302,12 @@
       const nameTarget = findTarget(previewImageName.value, listIdx, 1)
       previewImageName.value.splice(indexOf(nameTarget), 1)
 
-    } else {
+    } else if (type == 'double' && brandInfo.value.content[listIdx].article.length == 1) {
       brandInfo.value.content[listIdx].article.push({
+        title: {
+          en: '',
+          zh: ''
+        },
         text: {
           en: '',
           zh: ''
@@ -383,10 +395,18 @@
               <select
                 v-model="item.layout.position">
                 <option value="" selected disabled>請選擇圖片位置</option>
-                <option value="image-left">置左</option>
-                <option value="image-right">置右</option>
-                <option value="image-top">置頂</option>
-                <option value="image-bottom">置底</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'horizon'"
+                  value="image-left">置左</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'horizon'"
+                  value="image-right">置右</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'vertical'"
+                  value="image-top">置頂</option>
+                <option
+                  v-if="item.layout.direction.split('-')[1] == 'vertical'"
+                  value="image-bottom">置底</option>
               </select>
             </div>
             <!-- <div class="selectItem">
@@ -420,14 +440,24 @@
                 <span v-if="findTarget(previewImageName, listIdx, idx)">{{ findTarget(previewImageName, listIdx, idx).name }}</span>
                 <label :for="`selectImage-${listIdx}-${idx}`">選擇檔案</label>
               </div>
+              <input
+                v-model="article.title.en"
+                placeholder="請輸入英文標題"
+                v-if="showText(listIdx)"
+                type="text" />
               <textarea
                 v-model="article.text.en"
                 placeholder="請輸入英文內容"
                 v-if="showText(listIdx)">{{ showText(listIdx) }}</textarea>
-                <textarea
-                  v-model="article.text.zh"
-                  placeholder="請輸入中文內容"
-                  v-if="showText(listIdx)"></textarea>
+              <input
+                v-model="article.title.zh"
+                placeholder="請輸入中文標題"
+                v-if="showText(listIdx)"
+                type="text" />
+              <textarea
+                v-model="article.text.zh"
+                placeholder="請輸入中文內容"
+                v-if="showText(listIdx)"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>

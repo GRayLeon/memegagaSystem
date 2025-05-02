@@ -601,6 +601,12 @@
       gap: 16px;
       width: calc( 50% - 16px/2 );
     }
+    input {
+      width: 100%;
+      padding: 16px;
+      border: #555 1px solid;
+      border-radius: 8px;;
+    }
     textArea {
       width: 100%;
       padding: 16px;

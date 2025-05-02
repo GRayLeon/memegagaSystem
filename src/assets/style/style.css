@@ -1279,6 +1279,12 @@ body {
   gap: 16px;
   width: calc(50% - 8px);
 }
+.projectImages .imageList input {
+  width: 100%;
+  padding: 16px;
+  border: #555 1px solid;
+  border-radius: 8px;
+}
 .projectImages .imageList textArea {
   width: 100%;
   padding: 16px;
