@@ -134,27 +134,44 @@
     if (file) {
       const newFile = new File([file], `${Date.now() + listIdx + idx}_${file.name}`, { type: file.type })
 
-      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
+      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        file: null
+      }
       if (fileTarget) {
         fileTarget.file = newFile
       }
 
-      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
+      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        url: ''
+      }
       if (urlTarget) {
         urlTarget.url = URL.createObjectURL(file)
       }
 
-      const nameTarget = findTarget(previewImageName.value, listIdx, idx)
+      const nameTarget = findTarget(previewImageName.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        name: ''
+      }
       if (nameTarget) {
         nameTarget.name = file.name
       }
 
-      const updateTarget = findTarget(updateImageFile.value, listIdx, idx)
+      const updateTarget = findTarget(updateImageFile.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        name: ''
+      }
       if (updateTarget) {
         updateTarget.name = newFile.name.split(".")[0]
       }
 
     } else {
+      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
+      if (fileTarget) {
+        fileTarget.file = null
+      }
+      
       const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
       if (urlTarget) {
         urlTarget.url = null
@@ -191,6 +208,14 @@
         imagePublicId: ''
       }]
     })
+    selectImageFiles.value.push({
+      index: [newsInfo.value.content.length - 1, 0],
+      file: null
+    })
+    updateImageFile.value.push({
+      index: [newsInfo.value.content.length - 1, 0],
+      name: ''
+    })
     isImageChanging.value.push({
       index: [newsInfo.value.content.length - 1, 0],
       isChange: true
@@ -214,6 +239,7 @@
   }
   const removeImage = idx => {
     newsInfo.value.content.splice(idx, 1)
+    removeParent(updateImageFile.value, idx)
     removeParent(selectImageFiles.value, idx)
     removeParent(previewImageUrl.value, idx)
     removeParent(previewImageName.value, idx)
@@ -278,6 +304,14 @@
       })
     }
     if (newsInfo.value.content.length == 0) {
+      selectImageFiles.value.push({
+        index: [0, 0],
+        file: null
+      })
+      updateImageFile.value.push({
+        index: [0, 0],
+        name: ''
+      })
       previewImageUrl.value.push({
         index: [0, 0],
         url: null
@@ -298,14 +332,20 @@
     if (type == 'single' && newsInfo.value.content[listIdx].article.length == 2) {
       newsInfo.value.content[listIdx].article.splice(1, 1)
 
+      const selectTarget = findTarget(selectImageFiles.value, listIdx, 1)
+      selectImageFiles.value.splice(selectImageFiles.value.indexOf(selectTarget), 1)
+
+      const updateTarget = findTarget(updateImageFile.value, listIdx, 1)
+      updateImageFile.value.splice(updateImageFile.value.indexOf(updateTarget), 1)
+
       const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
-      isImageChanging.value.splice(indexOf(changeTarget), 1)
+      isImageChanging.value.splice(isImageChanging.value.indexOf(changeTarget), 1)
 
       const urlTarget = findTarget(previewImageUrl.value, listIdx, 1)
-      previewImageUrl.value.splice(indexOf(urlTarget), 1)
+      previewImageUrl.value.splice(previewImageUrl.value.indexOf(urlTarget), 1)
 
       const nameTarget = findTarget(previewImageName.value, listIdx, 1)
-      previewImageName.value.splice(indexOf(nameTarget), 1)
+      previewImageName.value.splice(previewImageName.value.indexOf(nameTarget), 1)
 
     } else if (type == 'double'  && newsInfo.value.content[listIdx].article.length == 1) {
       newsInfo.value.content[listIdx].article.push({
@@ -320,9 +360,17 @@
         imageURL: '',
         imagePublicId: ''
       })
+      selectImageFiles.value.push({
+        index: [listIdx, 1],
+        file: null
+      })
+      updateImageFile.value.push({
+        index: [listIdx, 1],
+        name: ''
+      })
       isImageChanging.value.push({
         index: [listIdx, 1],
-        isChange: false
+        isChange: true
       })
       previewImageUrl.value.push({
         index: [listIdx, 1],

@@ -13,7 +13,7 @@
       <span>Enoion Manage System</span>
     </div>
     <nav>
-      <p>登入帳號 - {{ profile.account }} / {{ profile.type }}</p>
+      <p>登入帳號 - {{ profile.account }}</p>
       <a href="/" target="_blank">網站前台</a>
       <a href="" @click="logout()">登出</a>
     </nav>

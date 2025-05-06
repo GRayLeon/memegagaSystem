@@ -93,34 +93,51 @@
   const findTarget = (data, listIdx, idx) => {
     return data.find( item =>
       item.index[0] === listIdx && item.index[1] === idx
-    ) || data[0]
+    )
   }
   const onImageFileChange = (event, listIdx, idx) => {
     const file = event.target.files[0]
     if (file) {
       const newFile = new File([file], `${Date.now() + listIdx + idx}_${file.name}`, { type: file.type })
 
-      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
+      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        file: null
+      }
       if (fileTarget) {
         fileTarget.file = newFile
       }
 
-      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
+      const urlTarget = findTarget(previewImageUrl.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        url: ''
+      }
       if (urlTarget) {
         urlTarget.url = URL.createObjectURL(file)
       }
 
-      const nameTarget = findTarget(previewImageName.value, listIdx, idx)
+      const nameTarget = findTarget(previewImageName.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        name: ''
+      }
       if (nameTarget) {
         nameTarget.name = file.name
       }
 
-      const updateTarget = findTarget(updateImageFile.value, listIdx, idx)
+      const updateTarget = findTarget(updateImageFile.value, listIdx, idx) || {
+        index: [listIdx, idx],
+        name: ''
+      }
       if (updateTarget) {
         updateTarget.name = newFile.name.split(".")[0]
       }
 
     } else {
+      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
+      if (fileTarget) {
+        fileTarget.file = null
+      }
+
       const urlTarget = findTarget(previewImageUrl.value, listIdx, idx)
       if (urlTarget) {
         urlTarget.url = null
@@ -146,16 +163,24 @@
         imagePublicId: ''
       }]
     })
+    selectImageFiles.value.push({
+      index: [projectInfo.value.imageList.length - 1, 0],
+      file: null
+    })
+    updateImageFile.value.push({
+      index: [projectInfo.value.imageList.length - 1, 0],
+      name: ''
+    })
     isImageChanging.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [projectInfo.value.imageList.length - 1, 0],
       isChange: true
     })
     previewImageUrl.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [projectInfo.value.imageList.length - 1, 0],
       url: ''
     })
     previewImageName.value.push({
-      index: [projectInfo.value.imageList.length, 0],
+      index: [projectInfo.value.imageList.length - 1, 0],
       name: '請選擇圖片檔案'
     })
   }
@@ -169,6 +194,7 @@
   }
   const removeImage = idx => {
     projectInfo.value.imageList.splice(idx, 1)
+    removeParent(updateImageFile.value, idx)
     removeParent(selectImageFiles.value, idx)
     removeParent(previewImageUrl.value, idx)
     removeParent(previewImageName.value, idx)
@@ -192,6 +218,8 @@
   }
 
   const initProjectInfo = () => {
+    selectImageFiles.value = []
+    updateImageFile.value = []
     if (isEdit.value) {
       projects.value.data.forEach( project => {
         if (project._id == route.params.id) {
@@ -245,6 +273,14 @@
       })
     }
     if (projectInfo.value.imageList.length == 0) {
+      selectImageFiles.value.push({
+        index: [0, 0],
+        file: null
+      })
+      updateImageFile.value.push({
+        index: [0, 0],
+        name: ''
+      })
       previewImageUrl.value.push({
         index: [0, 0],
         url: null
@@ -260,28 +296,42 @@
     }
   }
 
-  const onClassChange = (listIdx) => {
+  const onClassChange = listIdx => {
     const type = projectInfo.value.imageList[listIdx].class
-    if (type == 'single') {
+    if (type == 'single' && projectInfo.value.imageList[listIdx].images.length == 2) {
       projectInfo.value.imageList[listIdx].images.splice(1, 1)
 
-      const changeTarget = findTarget(isImageChanging.value, listIdx, 1)
-      isImageChanging.value.splice(indexOf(changeTarget), 1)
+      const selectTarget = findTarget(selectImageFiles.value, listIdx, 1)
+      selectImageFiles.value.splice(selectImageFiles.value.indexOf(selectTarget), 1)
+
+      const updateTarget = findTarget(updateImageFile.value, listIdx, 1)
+      updateImageFile.value.splice(updateImageFile.value.indexOf(updateTarget), 1)
+
+      const changeTarget = findTarget(isImageChanging.value, istIdx, 1)
+      isImageChanging.value.splice(isImageChanging.value.indexOf(changeTarget), 1)
 
       const urlTarget = findTarget(previewImageUrl.value, listIdx, 1)
-      previewImageUrl.value.splice(indexOf(urlTarget), 1)
+      previewImageUrl.value.splice(previewImageUrl.value.indexOf(urlTarget), 1)
 
       const nameTarget = findTarget(previewImageName.value, listIdx, 1)
-      previewImageName.value.splice(indexOf(nameTarget), 1)
+      previewImageName.value.splice(previewImageName.value.indexOf(nameTarget), 1)
 
-    } else {
+    } else if (type == 'double' && projectInfo.value.imageList[listIdx].images.length == 1) {
       projectInfo.value.imageList[listIdx].images.push({
         imageURL: '',
         imagePublicId: ''
       })
+      selectImageFiles.value.push({
+        index: [listIdx, 1],
+        file: null
+      })
+      updateImageFile.value.push({
+        index: [listIdx, 1],
+        name: ''
+      })
       isImageChanging.value.push({
         index: [listIdx, 1],
-        isChange: false
+        isChange: true
       })
       previewImageUrl.value.push({
         index: [listIdx, 1],

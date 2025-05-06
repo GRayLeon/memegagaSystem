@@ -27,10 +27,16 @@
   </div>
   <ul class="specList">
     <li>
-      <RouterLink to="/pages">關於我們</RouterLink>
+      <RouterLink to="/pages">首頁</RouterLink>
+    </li>
+    <li>
+      <RouterLink to="/pages/vision">關於我們</RouterLink>
     </li>
     <li>
       <RouterLink to="/pages/partner">合作夥伴</RouterLink>
+    </li>
+    <li>
+      <RouterLink to="/pages/contact">聯絡我們</RouterLink>
     </li>
   </ul>
   <div class="borderBox">

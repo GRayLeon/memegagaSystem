@@ -16,6 +16,14 @@ export const usePagesStore = defineStore('pages', () => {
 	const { openDialog, errorHandle } = storeToRefs(dialogStore)
 
   const pages = ref({
+    index: {
+      description: {
+        en: '',
+        zh: ''
+      },
+      imageUrl: '',
+      imagePublicId: ''
+    },
     vision: {
       description: {
         en: '',
@@ -28,9 +36,20 @@ export const usePagesStore = defineStore('pages', () => {
       name: '',
       imageUrl: '',
       imagePublicId: ''
-    }]
+    }],
+    contact: {
+      description: {
+        en: '',
+        zh: ''
+      },
+      address: {
+        en: '',
+        zh: ''
+      }
+    }
   })
 
+  const selectIndexFile = ref(null)
   const selectVisionFile = ref(null)
 
   const isGetPages = ref(false)
@@ -66,9 +85,14 @@ export const usePagesStore = defineStore('pages', () => {
 
     const formData = new FormData()
 
+    formData.append("index", JSON.stringify(pages.index))
     formData.append("vision", JSON.stringify(pages.vision))
     formData.append("partners", JSON.stringify(pages.partners))
+    formData.append("contact", JSON.stringify(pages.contact))
 
+    if (selectIndexFile.value) {
+      formData.append("indexImage", selectIndexFile.value)
+    }
     if (selectVisionFile.value) {
       formData.append("visionImage", selectVisionFile.value)
     }
@@ -100,7 +124,7 @@ export const usePagesStore = defineStore('pages', () => {
 
   return { 
     pages,
-    selectVisionFile,
+    selectIndexFile, selectVisionFile,
     selectPartnerImageFiles, updatePartnerImageFile,
     getPages, isGetPages, editPages
   }

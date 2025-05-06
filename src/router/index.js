@@ -238,6 +238,11 @@ const router = createRouter({
           children: [
             {
               path: '',
+              name: 'index',
+              component: () => import('../components/pages/EditIndex.vue')
+            },
+            {
+              path: 'vision',
               name: 'vision',
               component: () => import('../components/pages/EditVision.vue')
             },
@@ -245,7 +250,12 @@ const router = createRouter({
               path: 'partner',
               name: 'partner',
               component: () => import('../components/pages/EditPartner.vue')
-            }
+            },
+            {
+              path: 'contact',
+              name: 'contactPage',
+              component: () => import('../components/pages/EditContact.vue')
+            },
           ]
         },
         {
