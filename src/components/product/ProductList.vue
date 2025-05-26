@@ -52,7 +52,7 @@
     <button @click="goToAddProduct">新增產品</button>
   </div>
   <div class="filterArea">
-    <div class="inputItem">
+    <!-- <div class="inputItem">
       <div class="head">分類</div>
       <select v-model="category">
         <option value="">全部分類</option>
@@ -62,7 +62,7 @@
           {{ category.name['zh'] }}&emsp;/&emsp;{{ category.name['en'] }}{{ category.active ? '' : '&emsp;(停用)' }}
         </option>
       </select>
-    </div>
+    </div> -->
     <div class="inputItem">
       <div class="head">狀態</div>
       <select v-model="status">
@@ -89,7 +89,7 @@
       <div class="img">圖片</div>
       <div class="name">名稱</div>
       <div class="status">狀態</div>
-      <div class="category">分類</div>
+      <!-- <div class="category">分類</div> -->
       <div class="description">描述</div>
       <div class="price">價錢</div>
     </li>
@@ -99,9 +99,9 @@
       <div class="status">
         <span :class="product.status">{{ statusWording(product.status) }}</span>
       </div>
-      <div class="category">
+      <!-- <div class="category">
         {{ categoryWording(product.parentCategory) }}
-      </div>
+      </div> -->
       <div class="description">{{  product.description['zh'] }}</div>
       <div class="price">{{  product.basePrice }}<span>NTD</span></div>
     </li>

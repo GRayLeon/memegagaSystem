@@ -229,18 +229,6 @@
     removeParent(isImageChanging.value, idx)
   }
 
-  const textSwitch = idx => {
-    if (brandInfo.value.content[idx].text !== null) {
-      brandInfo.value.content[idx].text = null
-    } else {
-      brandInfo.value.content[idx].text = ''
-    }
-  }
-
-  const showText = idx => {
-    return brandInfo.value.content[idx].text !== null
-  }
-
   const backcardList = () => {
     router.push({ name: 'brandList'})
   }
@@ -396,7 +384,7 @@
       <div class="backButton" @click="backcardList()">
         <span class="material-icons">chevron_left</span>
       </div>
-      <h1>{{ typeWording }}貼文</h1>
+      <h1>{{ typeWording }}品牌</h1>
     </div>
   </div>
   <div class="editArea">
@@ -457,12 +445,6 @@
                   value="image-bottom">置底</option>
               </select>
             </div>
-            <!-- <div class="selectItem">
-              <div
-                class="switchButton"
-                :class="{ active: showText(listIdx) }"
-                @click="textSwitch(listIdx)">顯示文字</div>
-            </div> -->
           </div>
           <div class="imageList">
             <div class="imageList__image" v-for="(article, idx) in item.article">
@@ -491,21 +473,17 @@
               <input
                 v-model="article.title.en"
                 placeholder="請輸入英文標題"
-                v-if="showText(listIdx)"
-                type="text" />
+                type="text">
               <textarea
                 v-model="article.text.en"
-                placeholder="請輸入英文內容"
-                v-if="showText(listIdx)">{{ showText(listIdx) }}</textarea>
+                placeholder="請輸入英文內容"></textarea>
               <input
                 v-model="article.title.zh"
                 placeholder="請輸入中文標題"
-                v-if="showText(listIdx)"
-                type="text" />
+                type="text">
               <textarea
                 v-model="article.text.zh"
-                placeholder="請輸入中文內容"
-                v-if="showText(listIdx)"></textarea>
+                placeholder="請輸入中文內容"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>

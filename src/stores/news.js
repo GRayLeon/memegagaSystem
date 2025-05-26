@@ -117,7 +117,7 @@ export const useNewsStore = defineStore('news', () => {
 
     formData.append("content", JSON.stringify(newsInfo.content))
 
-    if (news.imagePublicId) {
+    if (newsInfo.imagePublicId) {
       formData.append("imagePublicId", newsInfo.imagePublicId)
     }
     if (selectFile.value) {

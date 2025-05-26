@@ -648,13 +648,13 @@
               v-model="shape.title"
               placeholder="請輸入面狀規格" />
           </div>
-          <div class="shapeInputItem">
+          <!-- <div class="shapeInputItem">
             <div class="subHead">倍率</div>
             <input
               type="number"
               v-model="shape.scale"
               placeholder="請輸入面狀倍率" />
-          </div>
+          </div> -->
           <div class="shapeInputOption">
             <div
               class="shapeButton"
