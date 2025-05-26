@@ -21,8 +21,12 @@ export const usePagesStore = defineStore('pages', () => {
         en: '',
         zh: ''
       },
-      imageUrl: '',
-      imagePublicId: ''
+      images: [
+        {
+          imageUrl: '',
+          imagePublicId: ''
+        }
+      ]
     },
     vision: {
       description: {
@@ -49,7 +53,10 @@ export const usePagesStore = defineStore('pages', () => {
     }
   })
 
-  const selectIndexFile = ref(null)
+  // const selectIndexFile = ref(null)
+
+  const selectIndexImageFiles = ref([])
+  const updateIndexImageFile = ref([])
   const selectVisionFile = ref(null)
 
   const isGetPages = ref(false)
@@ -90,8 +97,14 @@ export const usePagesStore = defineStore('pages', () => {
     formData.append("partners", JSON.stringify(pages.partners))
     formData.append("contact", JSON.stringify(pages.contact))
 
-    if (selectIndexFile.value) {
-      formData.append("indexImage", selectIndexFile.value)
+    // if (selectIndexFile.value) {
+    //   formData.append("indexImage", selectIndexFile.value)
+    // }
+    if (selectIndexImageFiles.value) {
+      selectIndexImageFiles.value.forEach( file => {
+        formData.append("indexImages", file)
+      })
+      formData.append("updateIndexImages", JSON.stringify(updateIndexImageFile.value))
     }
     if (selectVisionFile.value) {
       formData.append("visionImage", selectVisionFile.value)
@@ -124,7 +137,7 @@ export const usePagesStore = defineStore('pages', () => {
 
   return { 
     pages,
-    selectIndexFile, selectVisionFile,
+    selectIndexImageFiles, updateIndexImageFile, selectVisionFile,
     selectPartnerImageFiles, updatePartnerImageFile,
     getPages, isGetPages, editPages
   }
