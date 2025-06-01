@@ -4,7 +4,7 @@
   import { useLoadStore } from '@/stores/load'
 	import { storeToRefs } from 'pinia'
 	import { useRoute, useRouter } from 'vue-router'
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, computed, onMounted, onUpdated } from 'vue';
 
   const productStore = useProductStore()
 	const { 
@@ -12,7 +12,8 @@
     selectSubImageFiles, updateSubImageFile,
     selectShapeImageFiles, updateShapeImageFile,
     selectColorImageFiles, updateColorImageFile,
-    editProduct
+    editProduct,
+    getProducts
   } = storeToRefs(productStore)
 
   const specStore = useSpecStore()
@@ -343,6 +344,7 @@
   onMounted( async () => {
     isLoading.value = true
     await getSpecDatas.value()
+    await getProducts.value()
     initProductInfo()
     if (!isEdit.value) {
       isChanging.value = true
@@ -358,6 +360,10 @@
     selectSubImageFiles.value = []
     selectShapeImageFiles.value = []
     selectColorImageFiles.value = []
+  })
+
+  onUpdated( () => {
+    isLoading.value = false
   })
 
 </script>
