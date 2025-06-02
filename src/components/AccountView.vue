@@ -14,10 +14,6 @@
   onMounted( () => {
     getAccounts.value()
   })
-
-  onUpdated( () => {
-    isLoading.value = false
-  })
 </script>
 
 <template>

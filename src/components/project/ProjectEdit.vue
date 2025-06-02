@@ -7,7 +7,7 @@
 
   const projectStore = useProjectStore()
 	const { 
-    projects,
+    projects, getProjects,
     selectImageFiles, updateImageFile,
     editProject
   } = storeToRefs(projectStore)
@@ -344,14 +344,17 @@
     }
   }
 
-  onMounted( () => {
+  onMounted( async () => {
     isLoading.value = true
+    await getProjects.value()
     initProjectInfo()
     if (projectInfo.value.status == 'draft') {
       isDraft.value = true
     } else if (projectInfo.value.status == 'archived') {
       isArchived.value = true
     }
+    updateImageFile.value = []
+    selectImageFiles.value = []
   })
 
 </script>

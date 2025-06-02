@@ -171,6 +171,7 @@ export const useProductStore = defineStore('product', () => {
         }
       })
       if (response) {
+        getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'productList')
       }
     } catch(e) {
@@ -205,7 +206,7 @@ export const useProductStore = defineStore('product', () => {
 
   return { 
     statusList, page, pageSize, category, status, sort, order, 
-    products, selectSizes,
+    products, selectSizes, selectFile,
     selectSubImageFiles, updateSubImageFile,
     selectShapeImageFiles, updateShapeImageFile,
     selectColorImageFiles, updateColorImageFile,

@@ -15,10 +15,6 @@
     order.value = 'asc'
     getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
   })
-
-  onUpdated( () => {
-    getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
 </script>
 
 <template>

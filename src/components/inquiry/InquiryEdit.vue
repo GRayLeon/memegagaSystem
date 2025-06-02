@@ -7,7 +7,7 @@
   import { ref, computed, onMounted } from 'vue'
 
   const inquiryStore = useInquiryStore()
-	const { categoryList, inquirys, editInquiry, downloadInquiry } = storeToRefs(inquiryStore)
+	const { categoryList, inquirys, getInquiryDatas, editInquiry, downloadInquiry } = storeToRefs(inquiryStore)
 
   const authStore = useAuthStore()
 	const { profile } = storeToRefs(authStore)
@@ -90,8 +90,9 @@
     })
   }
 
-  onMounted(() => {
+  onMounted( async () => {
     isLoading.value = true
+    await getInquiryDatas.value()
     initInquiry()
   })
 </script>

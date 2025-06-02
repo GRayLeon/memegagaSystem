@@ -7,7 +7,7 @@
 
   const brandStore = useBrandStore()
 	const { 
-    brands,
+    brands, getBrands,
     selectFile, selectImageFiles, updateImageFile,
     editBrand
   } = storeToRefs(brandStore)
@@ -366,14 +366,17 @@
     }
   }
 
-  onMounted( () => {
+  onMounted( async () => {
     isLoading.value = true
+    await getBrands.value()
     initBrandInfo()
     if (brandInfo.value.status == 'draft') {
       isDraft.value = true
     } else if (brandInfo.value.status == 'archived') {
       isArchived.value = true
     }
+    updateImageFile.value = []
+    selectImageFiles.value = []
   })
 
 </script>

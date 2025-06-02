@@ -7,7 +7,7 @@
 
   const newsStore = useNewsStore()
 	const { 
-    news,
+    news, getNews,
     selectFile, selectImageFiles, updateImageFile,
     editNews
   } = storeToRefs(newsStore)
@@ -383,14 +383,17 @@
     }
   }
 
-  onMounted( () => {
+  onMounted( async () => {
     isLoading.value = true
+    await getNews.value()
     initNewsInfo()
     if (newsInfo.value.status == 'draft') {
       isDraft.value = true
     } else if (newsInfo.value.status == 'archived') {
       isArchived.value = true
     }
+    updateImageFile.value = []
+    selectImageFiles.value = []
   })
 
 </script>

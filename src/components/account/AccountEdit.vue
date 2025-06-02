@@ -6,7 +6,7 @@
   import { ref, computed, onMounted } from 'vue'
 
   const accountStore = useAccountStore()
-	const { editAccount, accounts } = storeToRefs(accountStore)
+	const { editAccount, accounts, getAccounts } = storeToRefs(accountStore)
 
   const loadStore = useLoadStore()
 	const { isLoading } = storeToRefs(loadStore)
@@ -45,8 +45,9 @@
     return ready
   })
 
-  onMounted(() => {
+  onMounted( async () => {
     isLoading.value = false
+    await getAccounts.value()
     initAccount()
   })
 </script>

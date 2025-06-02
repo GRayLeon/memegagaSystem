@@ -73,6 +73,7 @@ export const useInquiryStore = defineStore('inquiry', () => {
         }
       })
       if (response) {
+        getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
         openDialog.value('success', '編輯成功', '諮詢表單已經編輯成功，按確定返回諮詢管理列表。', 'inquiryList')
       }
     } catch(e) {

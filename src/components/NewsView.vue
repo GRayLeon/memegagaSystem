@@ -15,10 +15,7 @@
     order.value = 'asc'
     getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
   })
-
-  onUpdated( () => {
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
+  
 </script>
 
 <template>

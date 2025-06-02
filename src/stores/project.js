@@ -142,6 +142,7 @@ export const useProjectStore = defineStore('project', () => {
         }
       })
       if (response) {
+        getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'projectList')
       }
     } catch(e) {

@@ -147,6 +147,7 @@ export const useBrandStore = defineStore('brand', () => {
         }
       })
       if (response) {
+        getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'brandList')
       }
     } catch(e) {

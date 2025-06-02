@@ -150,6 +150,7 @@ export const useNewsStore = defineStore('news', () => {
         }
       })
       if (response) {
+        getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'newsList')
       }
     } catch(e) {
