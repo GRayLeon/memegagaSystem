@@ -38,15 +38,20 @@
     shapes: [],
     colors: [],
     tags: [],
-    origin: {},
-    appearance: {},
-    functionality: {},
-    support: {},
-    brand: {},
+    origin: '',
+    appearance: '',
+    functionality: '',
+    support: '',
+    brand: '', 
     status: 'draft',
     imageURL: '',
-    basePrice: 0
+    basePrice: 0,
+    slipResistance: 0,
+    model: '',
+    dimension: '',
+    application: ''
   })
+
 
   const basePrice = ref(0)
 
@@ -73,37 +78,37 @@
 
   const isReady = computed( () => {
     let ready = true
-    if( !productInfo.value.name.en ) { ready = false}
-    if( !productInfo.value.name.zh ) { ready = false}
-    if( !productInfo.value.description.en ) { ready = false}
-    if( !productInfo.value.description.zh ) { ready = false}
-    if( !productInfo.value.subImages ) { ready = false}
-    if( !productInfo.value.shapes ) { ready = false}
-    if( !productInfo.value.colors ) { ready = false}
-    if( !productInfo.value.tags ) { ready = false}
-    if( !productInfo.value.origin ) { ready = false}
-    if( !productInfo.value.appearance ) { ready = false}
-    if( !productInfo.value.functionality ) { ready = false}
-    if( !productInfo.value.support ) { ready = false}
-    if( !productInfo.value.brand ) { ready = false}
-    if( !productInfo.value.status ) { ready = false}
-    if( !productInfo.value.imageURL ) { ready = false}
+    // if( !productInfo.value.name.en ) { ready = false}
+    // if( !productInfo.value.name.zh ) { ready = false}
+    // if( !productInfo.value.description.en ) { ready = false}
+    // if( !productInfo.value.description.zh ) { ready = false}
+    // if( !productInfo.value.subImages ) { ready = false}
+    // if( !productInfo.value.shapes ) { ready = false}
+    // if( !productInfo.value.colors ) { ready = false}
+    // if( !productInfo.value.tags ) { ready = false}
+    // if( !productInfo.value.origin ) { ready = false}
+    // if( !productInfo.value.appearance ) { ready = false}
+    // if( !productInfo.value.functionality ) { ready = false}
+    // if( !productInfo.value.support ) { ready = false}
+    // if( !productInfo.value.brand ) { ready = false}
+    // if( !productInfo.value.status ) { ready = false}
+    // if( !productInfo.value.imageURL ) { ready = false}
     
-    if( productInfo.value.name.en == '' ) { ready = false}
-    if( productInfo.value.name.zh == '' ) { ready = false}
-    if( productInfo.value.description.en == '' ) { ready = false}
-    if( productInfo.value.description.zh == '' ) { ready = false}
-    if( productInfo.value.subImages == [] ) { ready = false}
-    if( productInfo.value.shapes == [] ) { ready = false}
-    if( productInfo.value.colors == [] ) { ready = false}
-    if( productInfo.value.tags == [] ) { ready = false}
-    if( productInfo.value.origin == {} ) { ready = false}
-    if( productInfo.value.appearance == {} ) { ready = false}
-    if( productInfo.value.functionality == {} ) { ready = false}
-    if( productInfo.value.support == {} ) { ready = false}
-    if( productInfo.value.brand == {} ) { ready = false}
-    if( productInfo.value.status == '' ) { ready = false}
-    if( productInfo.value.imageURL == '' ) { ready = false}
+    // if( productInfo.value.name.en == '' ) { ready = false}
+    // if( productInfo.value.name.zh == '' ) { ready = false}
+    // if( productInfo.value.description.en == '' ) { ready = false}
+    // if( productInfo.value.description.zh == '' ) { ready = false}
+    // if( productInfo.value.subImages == [] ) { ready = false}
+    // if( productInfo.value.shapes == [] ) { ready = false}
+    // if( productInfo.value.colors == [] ) { ready = false}
+    // if( productInfo.value.tags == [] ) { ready = false}
+    // if( productInfo.value.origin == {} ) { ready = false}
+    // if( productInfo.value.appearance == {} ) { ready = false}
+    // if( productInfo.value.functionality == {} ) { ready = false}
+    // if( productInfo.value.support == {} ) { ready = false}
+    // if( productInfo.value.brand == {} ) { ready = false}
+    // if( productInfo.value.status == '' ) { ready = false}
+    // if( productInfo.value.imageURL == '' ) { ready = false}
     return ready
   })
 
@@ -172,7 +177,7 @@
   const onSubImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_subImage`, { type: file.type })
       selectSubImageFiles.value[idx] = newFile
       previewSubImageUrl.value[idx] = URL.createObjectURL(file)
       previewSubImageName.value[idx] = file.name
@@ -219,7 +224,7 @@
   const onShapeImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_shpaeImage`, { type: file.type })
       selectShapeImageFiles.value[idx] = newFile
       previewShapeImageUrl.value[idx] = URL.createObjectURL(file)
       previewShapeImageName.value[idx] = file.name
@@ -268,7 +273,7 @@
   const onColorImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_colorImage`, { type: file.type })
       selectColorImageFiles.value[idx] = newFile
       previewColorImageUrl.value[idx] = URL.createObjectURL(file)
       previewColorImageName.value[idx] = file.name
@@ -322,7 +327,9 @@
 
   const initProductInfo = () => {
     if (isEdit.value) {
+      console.log(route.params.id)
       products.value.data.forEach(product => {
+        console.log(product._id)
         if (product._id == route.params.id) {
           productInfo.value = { ...product }
           selectSizes.value = [...productInfo.value.sizes]
@@ -557,6 +564,7 @@
         <option value="" disabled selected>請選擇應用場所</option>
         <option value="exterior">室外</option>
         <option value="interior">室內</option>
+        <option value="exterior/interior">室內/室外</option>
       </select>
     </div>
     <div class="inputItem">

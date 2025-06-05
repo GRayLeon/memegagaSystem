@@ -24,8 +24,6 @@ export const useNewsStore = defineStore('news', () => {
     { value: 'archived', label: '封存' }
   ])
 
-  const page = ref(1)
-  const pageSize = ref(10)
   const category = ref('')
   const status = ref('')
   const sort = ref('_id')
@@ -34,25 +32,20 @@ export const useNewsStore = defineStore('news', () => {
   const news = ref({
     data: [],
     pagination: {
-      currentPage: null,
-      pageSize: null,
-      total: null,
-      totalPages: null
+      total: null
     }
   })
 
   const isGetNews = ref(false)
 
-  const getNews = ref( async (page, pageSize, status, category, sort, order) => {
-    page = page? `page=${page}` : ''
-    pageSize = pageSize? `&size=${pageSize}` : ''
+  const getNews = ref( async (status, category, sort, order) => {
     status = status? `&status=${status}` : ''
     category = category? `&category=${category}` : ''
     sort = sort? `&sortBy=${sort}` : ''
     order = order? `&sortOrder=${order}` : ''
 
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/news?${page}${pageSize}${status}${category}${sort}${order}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/news?${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
@@ -150,7 +143,7 @@ export const useNewsStore = defineStore('news', () => {
         }
       })
       if (response) {
-        getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+        getNews.value(status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'newsList')
       }
     } catch(e) {
@@ -184,7 +177,7 @@ export const useNewsStore = defineStore('news', () => {
   })
 
   return { 
-    statusList, page, pageSize, category, status, sort, order, 
+    statusList, category, status, sort, order, 
     news,
     selectFile, selectImageFiles, updateImageFile,
     getNews, isGetNews, editNews, deleteNews, goToAddNews

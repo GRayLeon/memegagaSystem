@@ -6,7 +6,7 @@
   import { watch, onMounted } from 'vue'
 
   const productStore = useProductStore()
-	const { statusList, page, pageSize, category, status, sort, order, products, getProducts, goToAddProduct } = storeToRefs(productStore)
+	const { statusList, category, status, sort, order, products, getProducts, goToAddProduct } = storeToRefs(productStore)
 
   const categoryStore = useCategoryStore()
 	const { categorys, getCategorys } = storeToRefs(categoryStore)
@@ -21,24 +21,16 @@
     return statusList.value.find( status => status.value == statusValue ).label
   }
 
-  const changePageTo = idx => {
-    page.value = idx
-  }
-
   watch(status, nVal => {
-    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProducts.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(category, nVal => {
-    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProducts.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(sort, nVal => {
-    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
-
-  watch(page, nVal => {
-    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProducts.value(status.value, category.value, sort.value, order.value)
   })
 
   onMounted( () => {
@@ -109,14 +101,6 @@
   <div v-else class="empty">
     沒有符合此條件的產品。
   </div>
-  <ul v-if="products.pagination.totalPages > 1" class="pageList">
-    <li
-      v-for="idx in products.pagination.totalPages"
-      @click="changePageTo(idx)"
-      :class="{ 'active': idx == page}">
-      {{ idx }}
-    </li>
-  </ul>
 </template>
 
 <style scoped>

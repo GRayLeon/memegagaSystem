@@ -5,15 +5,14 @@
   import { onMounted } from 'vue'
 
   const productStore = useProductStore()
-  const { page, pageSize, category, status, sort, order, getProducts } = storeToRefs(productStore)
+  const { category, status, sort, order, getProducts } = storeToRefs(productStore)
 
   onMounted( () => {
-    page.value = 1
     category.value = ''
     status.value = ''
     sort.value = '_id'
     order.value = 'asc'
-    getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProducts.value()
   })
 
 </script>

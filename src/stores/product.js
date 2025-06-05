@@ -24,8 +24,6 @@ export const useProductStore = defineStore('product', () => {
     { value: 'archived', label: '封存' }
   ])
 
-  const page = ref(1)
-  const pageSize = ref(10)
   const category = ref('')
   const status = ref('')
   const sort = ref('_id')
@@ -34,10 +32,7 @@ export const useProductStore = defineStore('product', () => {
   const products = ref({
     data: [],
     pagination: {
-      currentPage: null,
-      pageSize: null,
-      total: null,
-      totalPages: null
+      total: null
     }
   })
 
@@ -46,16 +41,14 @@ export const useProductStore = defineStore('product', () => {
 
   const isGetProducts = ref(false)
 
-  const getProducts = ref( async (page, pageSize, status, category, sort, order) => {
-    page = page? `page=${page}` : ''
-    pageSize = pageSize? `&size=${pageSize}` : ''
+  const getProducts = ref( async (status, category, sort, order) => {
     status = status? `&status=${status}` : ''
     category = category? `&category=${category}` : ''
     sort = sort? `&sortBy=${sort}` : ''
     order = order? `&sortOrder=${order}` : ''
 
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/product?${page}${pageSize}${status}${category}${sort}${order}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/product?${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
@@ -171,7 +164,7 @@ export const useProductStore = defineStore('product', () => {
         }
       })
       if (response) {
-        getProducts.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+        getProducts.value(status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'productList')
       }
     } catch(e) {
@@ -205,7 +198,7 @@ export const useProductStore = defineStore('product', () => {
   })
 
   return { 
-    statusList, page, pageSize, category, status, sort, order, 
+    statusList, category, status, sort, order, 
     products, selectSizes, selectFile,
     selectSubImageFiles, updateSubImageFile,
     selectShapeImageFiles, updateShapeImageFile,

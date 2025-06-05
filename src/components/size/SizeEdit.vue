@@ -24,8 +24,8 @@
 
   const isReady = computed( () => {
     let ready = true
-    if (!size.value.size) { ready = false }
-    if (!size.value.scale) { ready = false }
+    // if (!size.value.size) { ready = false }
+    // if (!size.value.scale) { ready = false }
     return ready
   })
 

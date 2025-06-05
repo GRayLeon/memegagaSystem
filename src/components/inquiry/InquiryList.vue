@@ -5,7 +5,7 @@
   import { watch, onMounted } from 'vue'
 
   const inquiryStore = useInquiryStore()
-	const { categoryList, statusList, page, pageSize, category, status, sort, order, inquirys, getInquiryDatas } = storeToRefs(inquiryStore)
+	const { categoryList, statusList, category, status, sort, order, inquirys, getInquiryDatas } = storeToRefs(inquiryStore)
 
   const router = useRouter()
 
@@ -17,25 +17,16 @@
     return statusList.value.find( status => status.value == statusValue ).label
   }
 
-
-  const changePageTo = idx => {
-    page.value = idx
-  }
-
   watch(status, nVal => {
-    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getInquiryDatas.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(category, nVal => {
-    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getInquiryDatas.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(sort, nVal => {
-    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
-
-  watch(page, nVal => {
-    getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getInquiryDatas.value(status.value, category.value, sort.value, order.value)
   })
 
 </script>
@@ -74,14 +65,6 @@
   <div v-else class="empty">
     沒有符合此條件的表單。
   </div>
-  <ul v-if="inquirys.pagination.totalPages > 1" class="pageList">
-    <li
-      v-for="idx in inquirys.pagination.totalPages"
-      @click="changePageTo(idx)"
-      :class="{ 'active': idx == page}">
-      {{ idx }}
-    </li>
-  </ul>
 </template>
 
 <style scoped>

@@ -15,6 +15,10 @@ body {
   transition: .3s;
 }
 
+option {
+  color: #ccc !important;
+}
+
 .building {
   display: flex;
   flex-direction: column;

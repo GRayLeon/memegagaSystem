@@ -24,8 +24,6 @@ export const useBrandStore = defineStore('brand', () => {
     { value: 'archived', label: '封存' }
   ])
 
-  const page = ref(1)
-  const pageSize = ref(10)
   const category = ref('')
   const status = ref('')
   const sort = ref('_id')
@@ -34,25 +32,20 @@ export const useBrandStore = defineStore('brand', () => {
   const brands = ref({
     data: [],
     pagination: {
-      currentPage: null,
-      pageSize: null,
-      total: null,
-      totalPages: null
+      total: null
     }
   })
 
   const isGetBrands = ref(false)
 
-  const getBrands = ref( async (page, pageSize, status, category, sort, order) => {
-    page = page? `page=${page}` : ''
-    pageSize = pageSize? `&size=${pageSize}` : ''
+  const getBrands = ref( async (status, category, sort, order) => {
     status = status? `&status=${status}` : ''
     category = category? `&category=${category}` : ''
     sort = sort? `&sortBy=${sort}` : ''
     order = order? `&sortOrder=${order}` : ''
 
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/brand?${page}${pageSize}${status}${category}${sort}${order}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/brand?${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
@@ -147,7 +140,7 @@ export const useBrandStore = defineStore('brand', () => {
         }
       })
       if (response) {
-        getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+        getBrands.value(status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'brandList')
       }
     } catch(e) {
@@ -181,7 +174,7 @@ export const useBrandStore = defineStore('brand', () => {
   })
 
   return { 
-    statusList, page, pageSize, category, status, sort, order, 
+    statusList, category, status, sort, order, 
     brands,
     selectFile, selectImageFiles, updateImageFile,
     getBrands, isGetBrands, editBrand, deleteBrand, goToAddBrand

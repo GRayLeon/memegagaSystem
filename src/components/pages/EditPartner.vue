@@ -24,7 +24,7 @@
   const onPartnerImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_partnerImage`, { type: file.type })
       selectPartnerImageFiles.value[idx] = newFile
       previewPartnerImageUrl.value[idx] = URL.createObjectURL(file)
       previewPartnerImageName.value[idx] = file.name

@@ -29,8 +29,6 @@ export const useInquiryStore = defineStore('inquiry', () => {
     { value: 'ignore', label: '擱置' }
   ])
 
-  const page = ref(1)
-  const pageSize = ref(10)
   const category = ref('')
   const status = ref('')
   const sort = ref('_id')
@@ -39,10 +37,7 @@ export const useInquiryStore = defineStore('inquiry', () => {
   const inquirys = ref({
     data: [],
     pagination: {
-      currentPage: null,
-      pageSize: null,
-      total: null,
-      totalPages: null
+      total: null
     }
   })
 
@@ -73,7 +68,7 @@ export const useInquiryStore = defineStore('inquiry', () => {
         }
       })
       if (response) {
-        getInquiryDatas.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+        getInquiryDatas.value(status.value, category.value, sort.value, order.value)
         openDialog.value('success', '編輯成功', '諮詢表單已經編輯成功，按確定返回諮詢管理列表。', 'inquiryList')
       }
     } catch(e) {
@@ -88,7 +83,7 @@ export const useInquiryStore = defineStore('inquiry', () => {
   })
 
   return { 
-    categoryList, statusList, page, pageSize, category, status, sort, order,
+    categoryList, statusList, category, status, sort, order,
     statusList, inquirys, getInquiryDatas, editInquiry, downloadInquiry
   }
 })

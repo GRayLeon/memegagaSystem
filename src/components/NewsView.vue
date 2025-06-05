@@ -5,15 +5,14 @@
   import { onMounted, onUpdated } from 'vue'
 
   const newsStore = useNewsStore()
-  const { page, pageSize, category, status, sort, order, getNews } = storeToRefs(newsStore)
+  const { category, status, sort, order, getNews } = storeToRefs(newsStore)
 
   onMounted( () => {
-    page.value = 1
     category.value = ''
     status.value = ''
     sort.value = '_id'
     order.value = 'asc'
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getNews.value()
   })
   
 </script>

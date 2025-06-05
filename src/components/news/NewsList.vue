@@ -5,7 +5,7 @@
   import { watch } from 'vue'
 
   const newsStore = useNewsStore()
-	const { statusList, page, pageSize, category, status, sort, order, news, getNews, goToAddNews } = storeToRefs(newsStore)
+	const { statusList, category, status, sort, order, news, getNews, goToAddNews } = storeToRefs(newsStore)
 
   const router = useRouter()
 
@@ -13,24 +13,16 @@
     return statusList.value.find( status => status.value == statusValue).label
   }
 
-  const changePageTo = idx => {
-    page.value = idx
-  }
-
   watch(status, nVal => {
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getNews.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(category, nVal => {
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getNews.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(sort, nVal => {
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
-
-  watch(page, nVal => {
-    getNews.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getNews.value(status.value, category.value, sort.value, order.value)
   })
 </script>
 
@@ -78,14 +70,6 @@
   <div v-else class="empty">
     沒有符合此條件的專案。
   </div>
-  <ul v-if="news.pagination.totalPages > 1" class="pageList">
-    <li
-      v-for="idx in news.pagination.totalPages"
-      @click="changePageTo(idx)"
-      :class="{ 'active': idx == page}">
-      {{ idx }}
-    </li>
-  </ul>
 </template>
 
 <style scoped>

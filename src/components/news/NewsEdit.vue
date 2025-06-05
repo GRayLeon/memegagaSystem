@@ -90,22 +90,22 @@
 
   const isReady = computed( () => {
     let ready = true
-    if( !newsInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
-    if( !newsInfo.value.topic.en ) { ready = false}
-    if( !newsInfo.value.topic.zh ) { ready = false}
-    if( !newsInfo.value.source ) { ready = false}
-    if( !newsInfo.value.description.en ) { ready = false}
-    if( !newsInfo.value.description.zh ) { ready = false}
-    if( !newsInfo.value.detail.en ) { ready = false}
-    if( !newsInfo.value.detail.zh ) { ready = false}
+    // if( !newsInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    // if( !newsInfo.value.topic.en ) { ready = false}
+    // if( !newsInfo.value.topic.zh ) { ready = false}
+    // if( !newsInfo.value.source ) { ready = false}
+    // if( !newsInfo.value.description.en ) { ready = false}
+    // if( !newsInfo.value.description.zh ) { ready = false}
+    // if( !newsInfo.value.detail.en ) { ready = false}
+    // if( !newsInfo.value.detail.zh ) { ready = false}
     
-    if( newsInfo.value.topic.en == '' ) { ready = false}
-    if( newsInfo.value.topic.zh == '' ) { ready = false}
-    if( newsInfo.value.source == '' ) { ready = false}
-    if( newsInfo.value.description.en == '' ) { ready = false}
-    if( newsInfo.value.description.zh == '' ) { ready = false}
-    if( newsInfo.value.detail.en == '' ) { ready = false}
-    if( newsInfo.value.detail.zh == '' ) { ready = false}
+    // if( newsInfo.value.topic.en == '' ) { ready = false}
+    // if( newsInfo.value.topic.zh == '' ) { ready = false}
+    // if( newsInfo.value.source == '' ) { ready = false}
+    // if( newsInfo.value.description.en == '' ) { ready = false}
+    // if( newsInfo.value.description.zh == '' ) { ready = false}
+    // if( newsInfo.value.detail.en == '' ) { ready = false}
+    // if( newsInfo.value.detail.zh == '' ) { ready = false}
 
     return ready
   })
@@ -132,14 +132,17 @@
   const onImageFileChange = (event, listIdx, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + listIdx + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + listIdx + idx}_newsImage`, { type: file.type })
 
-      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx) || {
-        index: [listIdx, idx],
-        file: null
-      }
+      let fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
       if (fileTarget) {
         fileTarget.file = newFile
+      } else {
+        fileTarget = {
+          index: [listIdx, idx],
+          file: newFile
+        }
+        selectImageFiles.value.push(fileTarget)
       }
 
       const urlTarget = findTarget(previewImageUrl.value, listIdx, idx) || {
@@ -158,12 +161,15 @@
         nameTarget.name = file.name
       }
 
-      const updateTarget = findTarget(updateImageFile.value, listIdx, idx) || {
-        index: [listIdx, idx],
-        name: ''
-      }
+      let updateTarget = findTarget(updateImageFile.value, listIdx, idx)
       if (updateTarget) {
         updateTarget.name = newFile.name.split(".")[0]
+      } else {
+        updateTarget = {
+          index: [listIdx, idx],
+          name: newFile.name.split(".")[0]
+        }
+        updateImageFile.value.push(updateTarget)
       }
 
     } else {
@@ -438,7 +444,8 @@
               <div class="head">排列形式</div>
               <select
                 v-model="item.layout.direction"
-                @change="onClassChange(listIdx)">
+                @change="onClassChange(listIdx)"
+                :disabled="isArchived">
                 <option value="" selected disabled>請選擇排列形式</option>
                 <option value="single-vertical">單張垂直</option>
                 <option value="double-vertical">兩張垂直</option>
@@ -449,7 +456,8 @@
             <div class="selectItem">
               <div class="head">圖片位置</div>
               <select
-                v-model="item.layout.position">
+                v-model="item.layout.position"
+                :disabled="isArchived">
                 <option value="" selected disabled>請選擇圖片位置</option>
                 <option
                   v-if="item.layout.direction.split('-')[1] == 'horizon'"
@@ -493,17 +501,21 @@
               <input
                 v-model="article.title.en"
                 placeholder="請輸入英文標題"
-                type="text">
+                type="text"
+                :disabled="isArchived">
               <textarea
                 v-model="article.text.en"
-                placeholder="請輸入英文內容"></textarea>
+                placeholder="請輸入英文內容"
+                :disabled="isArchived"></textarea>
               <input
                 v-model="article.title.zh"
                 placeholder="請輸入中文標題"
-                type="text">
+                type="text"
+                :disabled="isArchived">
               <textarea
                 v-model="article.text.zh"
-                placeholder="請輸入中文內容"></textarea>
+                placeholder="請輸入中文內容"
+                :disabled="isArchived"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>

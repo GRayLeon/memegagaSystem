@@ -5,7 +5,7 @@
   import { watch } from 'vue'
 
   const projectStore = useProjectStore()
-	const { statusList, page, pageSize, category, status, sort, order, projects, getProjects, goToAddProject } = storeToRefs(projectStore)
+	const { statusList,category, status, sort, order, projects, getProjects, goToAddProject } = storeToRefs(projectStore)
 
   const router = useRouter()
 
@@ -13,24 +13,16 @@
     return statusList.value.find( status => status.value == statusValue ).label
   }
 
-  const changePageTo = idx => {
-    page.value = idx
-  }
-
   watch(status, nVal => {
-    getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProjects.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(category, nVal => {
-    getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProjects.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(sort, nVal => {
-    getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
-
-  watch(page, nVal => {
-    getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getProjects.value(status.value, category.value, sort.value, order.value)
   })
 </script>
 
@@ -78,14 +70,6 @@
   <div v-else class="empty">
     沒有符合此條件的專案。
   </div>
-  <ul v-if="projects.pagination.totalPages > 1" class="pageList">
-    <li
-      v-for="idx in projects.pagination.totalPages"
-      @click="changePageTo(idx)"
-      :class="{ 'active': idx == page}">
-      {{ idx }}
-    </li>
-  </ul>
 </template>
 
 <style scoped>

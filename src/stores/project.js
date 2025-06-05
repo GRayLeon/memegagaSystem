@@ -24,8 +24,6 @@ export const useProjectStore = defineStore('project', () => {
     { value: 'archived', label: '封存' }
   ])
 
-  const page = ref(1)
-  const pageSize = ref(10)
   const category = ref('')
   const status = ref('')
   const sort = ref('_id')
@@ -34,25 +32,20 @@ export const useProjectStore = defineStore('project', () => {
   const projects = ref({
     data: [],
     pagination: {
-      currentPage: null,
-      pageSize: null,
-      total: null,
-      totalPages: null
+      total: null
     }
   })
 
   const isGetProjects = ref(false)
 
-  const getProjects = ref( async (page, pageSize, status, category, sort, order) => {
-    page = page? `page=${page}` : ''
-    pageSize = pageSize? `&size=${pageSize}` : ''
+  const getProjects = ref( async (status, category, sort, order) => {
     status = status? `&status=${status}` : ''
     category = category? `&category=${category}` : ''
     sort = sort? `&sortBy=${sort}` : ''
     order = order? `&sortOrder=${order}` : ''
 
     isLoading.value = true
-    const apiURL = `${import.meta.env.VITE_APP_API_URL}/project?${page}${pageSize}${status}${category}${sort}${order}`
+    const apiURL = `${import.meta.env.VITE_APP_API_URL}/project?${status}${category}${sort}${order}`
     try {
       let response = await axios.get(apiURL)
       if (response) {
@@ -142,7 +135,7 @@ export const useProjectStore = defineStore('project', () => {
         }
       })
       if (response) {
-        getProjects.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+        getProjects.value(status.value, category.value, sort.value, order.value)
         openDialog.value('success', sucessInfo[editType].title, sucessInfo[editType].message, 'projectList')
       }
     } catch(e) {
@@ -176,7 +169,7 @@ export const useProjectStore = defineStore('project', () => {
   })
 
   return { 
-    statusList, page, pageSize, category, status, sort, order, 
+    statusList, category, status, sort, order, 
     projects,
     selectImageFiles, updateImageFile,
     getProjects, isGetProjects, editProject, deleteProject, goToAddProject

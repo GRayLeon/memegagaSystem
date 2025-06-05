@@ -29,7 +29,7 @@
     <div class="loginArea">
       <div class="loginBox" v-if="!isLogin">
         <div class="titleArea">
-          <h1>Eonion</h1>
+          <h1>Eonian</h1>
           <h2>Manage System</h2>
         </div>
         <input

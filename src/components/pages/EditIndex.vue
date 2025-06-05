@@ -44,7 +44,7 @@
   const onIndexImageFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_indexImage`, { type: file.type })
       selectIndexImageFiles.value[idx] = newFile
       previewIndexImageUrl.value[idx] = URL.createObjectURL(file)
       previewIndexImageName.value[idx] = file.name
@@ -68,6 +68,9 @@
       imageURL: '',
       imagePublicId: ''
     })
+    selectIndexImageFiles.value.push(null)
+    previewIndexImageUrl.value.push(null)
+    previewIndexImageName.value.push('請選擇圖片檔案')
     isIndexImageChanging.value.push(true)
   }
 
@@ -80,7 +83,15 @@
   }
   
   const initPages = () => {
-    pages.value.index.images.forEach( image => {
+    selectIndexImageFiles.value = []
+    previewIndexImageUrl.value = []
+    previewIndexImageName.value = []
+    isIndexImageChanging.value = []
+
+    pages.value.index.images.forEach(() => {
+      selectIndexImageFiles.value.push(null)
+      previewIndexImageUrl.value.push(null)
+      previewIndexImageName.value.push('請選擇圖片檔案')
       isIndexImageChanging.value.push(false)
     })
   }
@@ -88,7 +99,6 @@
   onMounted( async () => {
     isLoading.value = true
     initPages()
-    selectIndexImageFiles.value = []
     updateIndexImageFile.value = []
   })
 

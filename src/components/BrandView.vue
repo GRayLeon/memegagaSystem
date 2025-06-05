@@ -5,15 +5,14 @@
   import { onMounted, onUpdated } from 'vue'
 
   const brandStore = useBrandStore()
-  const { page, pageSize, category, status, sort, order, getBrands } = storeToRefs(brandStore)
+  const { category, status, sort, order, getBrands } = storeToRefs(brandStore)
 
   onMounted( () => {
-    page.value = 1
     category.value = ''
     status.value = ''
     sort.value = '_id'
     order.value = 'asc'
-    getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getBrands.value()
   })
 </script>
 

@@ -5,7 +5,7 @@
   import { watch } from 'vue'
 
   const brandStore = useBrandStore()
-	const { statusList, page, pageSize, category, status, sort, order, brands, getBrands, goToAddBrand } = storeToRefs(brandStore)
+	const { statusList, category, status, sort, order, brands, getBrands, goToAddBrand } = storeToRefs(brandStore)
 
   const router = useRouter()
 
@@ -13,24 +13,16 @@
     return statusList.value.find( status => status.value == statusValue).label
   }
 
-  const changePageTo = idx => {
-    page.value = idx
-  }
-
   watch(status, nVal => {
-    getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getBrands.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(category, nVal => {
-    getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getBrands.value(status.value, category.value, sort.value, order.value)
   })
 
   watch(sort, nVal => {
-    getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
-  })
-
-  watch(page, nVal => {
-    getBrands.value(page.value, pageSize.value, status.value, category.value, sort.value, order.value)
+    getBrands.value(status.value, category.value, sort.value, order.value)
   })
 </script>
 
@@ -78,14 +70,6 @@
   <div v-else class="empty">
     沒有符合此條件的品牌。
   </div>
-  <ul v-if="brands.pagination.totalPages > 1" class="pageList">
-    <li
-      v-for="idx in brands.pagination.totalPages"
-      @click="changePageTo(idx)"
-      :class="{ 'active': idx == page}">
-      {{ idx }}
-    </li>
-  </ul>
 </template>
 
 <style scoped>

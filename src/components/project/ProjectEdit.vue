@@ -54,24 +54,24 @@
 
   const isReady = computed( () => {
     let ready = true
-    if( !projectInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
-    if( !projectInfo.value.title ) { ready = false}
-    if( !projectInfo.value.category ) { ready = false}
-    if( !projectInfo.value.artist ) { ready = false}
-    if( !projectInfo.value.description.en ) { ready = false}
-    if( !projectInfo.value.description.zh ) { ready = false}
-    if( !projectInfo.value.detail.en ) { ready = false}
-    if( !projectInfo.value.detail.zh ) { ready = false}
-    if( !projectInfo.value.tags ) { ready = false}
+    // if( !projectInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    // if( !projectInfo.value.title ) { ready = false}
+    // if( !projectInfo.value.category ) { ready = false}
+    // if( !projectInfo.value.artist ) { ready = false}
+    // if( !projectInfo.value.description.en ) { ready = false}
+    // if( !projectInfo.value.description.zh ) { ready = false}
+    // if( !projectInfo.value.detail.en ) { ready = false}
+    // if( !projectInfo.value.detail.zh ) { ready = false}
+    // if( !projectInfo.value.tags ) { ready = false}
     
-    if( projectInfo.value.title == '' ) { ready = false}
-    if( projectInfo.value.category == '' ) { ready = false}
-    if( projectInfo.value.artist == '' ) { ready = false}
-    if( projectInfo.value.description.en == '' ) { ready = false}
-    if( projectInfo.value.description.zh == '' ) { ready = false}
-    if( projectInfo.value.detail.en == '' ) { ready = false}
-    if( projectInfo.value.detail.zh == '' ) { ready = false}
-    if( projectInfo.value.tags == [] ) { ready = false}
+    // if( projectInfo.value.title == '' ) { ready = false}
+    // if( projectInfo.value.category == '' ) { ready = false}
+    // if( projectInfo.value.artist == '' ) { ready = false}
+    // if( projectInfo.value.description.en == '' ) { ready = false}
+    // if( projectInfo.value.description.zh == '' ) { ready = false}
+    // if( projectInfo.value.detail.en == '' ) { ready = false}
+    // if( projectInfo.value.detail.zh == '' ) { ready = false}
+    // if( projectInfo.value.tags == [] ) { ready = false}
 
     return ready
   })
@@ -100,12 +100,15 @@
     if (file) {
       const newFile = new File([file], `${Date.now() + listIdx + idx}_${file.name}`, { type: file.type })
 
-      const fileTarget = findTarget(selectImageFiles.value, listIdx, idx) || {
-        index: [listIdx, idx],
-        file: null
-      }
+      let fileTarget = findTarget(selectImageFiles.value, listIdx, idx)
       if (fileTarget) {
         fileTarget.file = newFile
+      } else {
+        fileTarget = {
+          index: [listIdx, idx],
+          file: newFile
+        }
+        selectImageFiles.value.push(fileTarget)
       }
 
       const urlTarget = findTarget(previewImageUrl.value, listIdx, idx) || {
@@ -124,12 +127,15 @@
         nameTarget.name = file.name
       }
 
-      const updateTarget = findTarget(updateImageFile.value, listIdx, idx) || {
-        index: [listIdx, idx],
-        name: ''
-      }
+      let updateTarget = findTarget(updateImageFile.value, listIdx, idx)
       if (updateTarget) {
         updateTarget.name = newFile.name.split(".")[0]
+      } else {
+        updateTarget = {
+          index: [listIdx, idx],
+          name: newFile.name.split(".")[0]
+        }
+        updateImageFile.value.push(updateTarget)
       }
 
     } else {
@@ -376,7 +382,8 @@
             <div class="head">排列形式</div>
             <select
               v-model="imageList.class"
-              @change="onClassChange(listIdx)">
+              @change="onClassChange(listIdx)"
+              :disabled="isArchived">
               <option value="" selected disabled>請選擇排列形式</option>
               <option value="single">單張滿版</option>
               <option value="double">兩張並列</option>
@@ -485,7 +492,7 @@
         placeholder="請輸入中文敘述"
         type="text"></textarea>
     </div>
-    <div class="inputItem">
+    <!-- <div class="inputItem">
       <div class="head">標籤</div>
       <div class="tagListArea">
         <div class="tagList" v-if="projectInfo.tags.length > 0">
@@ -514,7 +521,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="buttonArea" v-if="isEdit && !isArchived && !isDraft">
       <button 
         :disabled="!isReady"

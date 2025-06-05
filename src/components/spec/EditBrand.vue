@@ -22,7 +22,7 @@
   const onBrandFileChange = (event, idx) => {
     const file = event.target.files[0]
     if (file) {
-      const newFile = new File([file], `${Date.now() + idx}_${file.name}`, { type: file.type })
+      const newFile = new File([file], `${Date.now() + idx}_brandImage`, { type: file.type })
       selectBrandFiles.value[idx] = newFile
       previewBrandUrl.value[idx] = URL.createObjectURL(file)
       previewBrandName.value[idx] = file.name

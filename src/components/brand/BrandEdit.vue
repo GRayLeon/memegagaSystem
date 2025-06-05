@@ -60,14 +60,14 @@
 
   const isReady = computed( () => {
     let ready = true
-    if( !brandInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
-    if( !brandInfo.value.name ) { ready = false}
-    if( !brandInfo.value.description.en ) { ready = false}
-    if( !brandInfo.value.description.zh ) { ready = false}
+    // if( !brandInfo.value.imageURL && !previewImageUrl.value ) { ready = false}
+    // if( !brandInfo.value.name ) { ready = false}
+    // if( !brandInfo.value.description.en ) { ready = false}
+    // if( !brandInfo.value.description.zh ) { ready = false}
     
-    if( brandInfo.value.name == '' ) { ready = false}
-    if( brandInfo.value.description.en == '' ) { ready = false}
-    if( brandInfo.value.description.zh == '' ) { ready = false}
+    // if( brandInfo.value.name == '' ) { ready = false}
+    // if( brandInfo.value.description.en == '' ) { ready = false}
+    // if( brandInfo.value.description.zh == '' ) { ready = false}
 
     return ready
   })
@@ -421,7 +421,8 @@
               <div class="head">排列形式</div>
               <select
                 v-model="item.layout.direction"
-                @change="onClassChange(listIdx)">
+                @change="onClassChange(listIdx)"
+                :disabled="isArchived">
                 <option value="" selected disabled>請選擇排列形式</option>
                 <option value="single-vertical">單張垂直</option>
                 <option value="double-vertical">兩張垂直</option>
@@ -432,7 +433,8 @@
             <div class="selectItem">
               <div class="head">圖片位置</div>
               <select
-                v-model="item.layout.position">
+                v-model="item.layout.position"
+                :disabled="isArchived">
                 <option value="" selected disabled>請選擇圖片位置</option>
                 <option
                   v-if="item.layout.direction.split('-')[1] == 'horizon'"
@@ -476,17 +478,21 @@
               <input
                 v-model="article.title.en"
                 placeholder="請輸入英文標題"
-                type="text">
+                type="text"
+                :disabled="isArchived">
               <textarea
                 v-model="article.text.en"
-                placeholder="請輸入英文內容"></textarea>
+                placeholder="請輸入英文內容"
+                :disabled="isArchived"></textarea>
               <input
                 v-model="article.title.zh"
                 placeholder="請輸入中文標題"
-                type="text">
+                type="text"
+                :disabled="isArchived">
               <textarea
                 v-model="article.text.zh"
-                placeholder="請輸入中文內容"></textarea>
+                placeholder="請輸入中文內容"
+                :disabled="isArchived"></textarea>
             </div>
             <div class="deleteImage" @click="removeImage(listIdx)"><span class="material-icons">close</span></div>
           </div>
